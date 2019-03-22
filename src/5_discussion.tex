@@ -1,0 +1,12 @@
+
+
+\section{Conclusion}
+\noindent In conclusion, we have presented an evaluation of different gating mechanisms to allow for multiclass image generation using GANs. 
+We propose an auxiliary channelwise gating network for conditioning combined with a skinny ResNet, and show that this combination improves state-of-the-art results in both class-conditioned and unsupervised settings.
+
+%Its interesting to observe that with a simple residual block on the non-parametric density estimation task, the removal of certain blocks corresponds to the removal of modes in the generated distribution and the incision of different blocks corresponding to the removal of the same mode from the generated distribution shows the validity of the claims in \cite{veit2016residual} which says that residual networks behave as an ensemble of several shallower networks. 
+
+%The results with the Gated Residual Blocks on the Generator on the infoGAN configuration for unconditional setting and the image conditional setting proves the efficacy of the gated residual blocks on the respective tasks. The results of the Gated Residual Blocks on the side of the discriminator shows an intriguing observation that inspite the network being oblivious of the class conditioning, the gate selection network aptly distributed the right blocks for the appropriate classes to disentangle the class conditioning. The Gated Residual Blocks has applications beyond GANs and can be used potentially in many conditional scenarios such as text to image synthesis or Conditional Variational Autoencoders. 
+
+% \section{Conclusion}
+% The paper introduced a novel model to disentangle image information and low dimensional information using Gated Residual Blocks which was efficient in generating images in the unconditional setting for infoGAN as well as class and image conditioned setting for the pix2pix variant. The paper also introduced the novel task of class conditional realistic image synthesis from rough scribbles, in which the proposed model performed quite favorably.

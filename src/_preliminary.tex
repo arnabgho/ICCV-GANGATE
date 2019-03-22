@@ -1,0 +1,65 @@
+\section{Preliminaries}
+\newcommand{\addSubFigHalf}[3]{\begin{subfigure}[t]{.45\linewidth}
+   \includegraphics[width=\linewidth]{#1}
+   \caption{#2}\label{#3}\end{subfigure}
+}
+
+
+One aspect of residual networks is that information can bypass layers, forming essentially an ``ensemble'' of several shallower networks.
+Veit et al.~\cite{veit2016residual} showed in a classification setting, that classification performance is largely maintained even when fully removing some residual blocks.
+We investigate whether this aspect can lead to more efficient parameter usage for multi-class image generation, by using fully residual networks for both generator and discriminators in a GAN network.
+Instead of fully removing residual blocks, we evaluate a number of soft-gating mechanisms.
+%with a whereby a hypernetwork gets the condition modulates the feature activations of the residual blocks i.e. the output of the standard residual block was modified from $x+f(x)$ to  $x+\alpha . f(x)$ where the set of alphas for each of the residual block is predicted by the hypernetwork. 
+
+
+\paragraph{Relationship to conditioning}
+This approach can be seen as form of conditioning. 
+Conditioning by concatenation is a weak form of conditioning because by information theoretic principles, the deeper the network the lesser mutual information is preserved between the conditioning input and the output of the network. To mitigate this issue some other solutions such as the projection discriminator \cite{miyato2018cgans} have been proposed and our residual gate selection block on the discriminator is along similar lines. 
+
+
+% \begin{align}\label{eq:ganObjective}
+%      \min_{\theta_g}\max_{\theta_d}\; & V(\theta_d, \theta_g) := \E_{x \sim p_{d}} \log D(x; \theta_d) \nonumber \\&
+%      + \E_{z \sim p_z } \log \big( 1 - D(G(z; \theta_g) ; \theta_d)\big) 
+% \end{align}
+% \paragraph{GANs:} 
+% Here we present a brief review of GANs~\cite{goodfellow2014generative}. Given a set of samples $\mathcal{D} = (x_i)_{i=1}^n$ from the true data distribution $p_d$, the GAN learning problem is to obtain the optimal parameters $\theta_g$ of a generator $G(z;\theta_g)$ that can sample from an approximate data distribution $p_g$, where $z \sim p_z$ is the prior input noise (\eg samples from a normal distribution). In order to learn the optimal $\theta_g$, the GAN objective (Eq. \eqref{eq:ganObjective}) employs a discriminator $D(x; \theta_d)$ that learns to differentiate between a {\em real} (from $p_d$) and a {\em fake} (from $p_g$) sample $x$. The overall GAN objective is:
+
+
+% The above objective is optimized in a block-wise manner where $\theta_d$ and $\theta_g$ are optimized one at a time while fixing the other. For a given sample $x$ (either from $p_d$ or $p_g$) and the parameter $\theta_d$, the function $D(x; \theta_d) \in [0, 1]$ produces a score that represents the probability of $x$ belonging to the true data distribution $p_d$ (or probability of it being real). The objective of the discriminator is to learn parameters $\theta_d$ that maximizes this score for the true samples (from $p_d$) while minimizing it for the fake ones $\tilde{x} = D(z; \theta_g)$ (from $p_g$). In the case of generator, the objective is to minimize $\E_{z \sim p_z}\log \big( 1 - D(G(z; \theta_g) ; \theta_d) \big)$, equivalently maximize $\E_{z \sim p_z} \log D(G(z; \theta_g) ; \theta_d)$. Thus, the generator learns to maximize the scores for the fake samples (from $p_g$), which is exactly the opposite to what discriminator is trying to achieve. In this manner, the generator and the discriminator are involved in a minimax game where the task of the generator is to maximize the mistakes of the discriminator. Theoretically, at equilibrium, the generator learns to generate real samples, which means $p_g = p_d$.
+
+% \subsection*{Residual Networks:}
+% There was the standard degradation problem in deep neural networks that even after adding more layers to a network the performance of the network doesn't increase . Residual Networks\cite{he2016deep} address the degradation problem by introducing a deep residual learning framework. Instead of hoping each few stacked layers directly fit a desired underlying mapping, they explicitly let these layers fit a residual mapping. Formally, denoting the desired underlying mapping as H(x), they let the stacked nonlinear layers fit another mapping of $F(x):=H(x)-x$. The original mapping is recast into $F(x)+x$. The hypothesis is that it is easier to optimize the residual mapping than to optimize the original mapping. To the extreme, if an identity mapping were optimal, it would be easier to push the residual to zero than to fit an identity mapping by a stack of nonlinear layers.
+
+
+% We show an interesting set of experiments in the 1D setting of Mixture of Gaussians as was performed in \cite{ghosh2017multi}. A model was trained with the generator composed of residual blocks and then in line with the experiments performed in \cite{veit2016residual} we removed certain residual blocks and allowed the information to flow through the skip connection and we found that removal of certain modes corresponded to the removal of certain residual blocks hence supporting the arguments in \cite{veit2016residual} that residual networks behave as an ensemble of several shallower networks even in the case of generative models.
+
+
+\begin{figure}[t]
+    \centering
+    \addSubFigHalf{Picture33.png}{Generated Samples from the trained Generator}{fig:1d_gen} 
+    \addSubFigHalf{Picture3.png}{Generated Samples from the trained Generator with one of the blocks removed}{fig:1d_gen_rem} 
+    \caption{Generations in MoG 1D setting}
+    \label{fig:onedexperiment}
+    \vspace{-3mm}
+\end{figure}
+\paragraph{1D experiment:}
+We first evaluate the effect of a gating network in a simple scenario where the data distribution is a 1D mixture of Gaussians. 
+We train \model{} in this simple setting, analyze the effect of removing different blocks via the gating network, in the vein of \cite{veit2016residual}.
+We observe in Figure ~\ref{fig:onedexperiment}, when some residual blocks were disabled (and only the skip connection of that block was activated), it led to the disappearance of particular modes from the data distribution. 
+Removal of groups of blocks led to the disappearance of clusters of modes from the generated distribution. 
+
+% \begin{figure*}%[ht!]
+%     \centering
+%     \addSubFigHalf{Picture13.png}{Gated Residual Blocks for the Generator}{fig:gru_gen} 
+%     \addSubFigHalf{Picture14.png}{Gated Residual Blocks for the Discriminator}{fig:gru_dis} 
+%     \caption{Gated Residual Blocks in Generator and Discriminator}
+%     \label{fig:model}
+%     \vspace{-3mm}
+% \end{figure*}
+
+
+% \paragraph{MNIST experiment:}
+% Our experiments with the gate selection block on the quintessential MNIST dataset show its efficacy in a limited setting, we further show that infogan based network could be applied to the pix2pix experiments which was earlier known to produce the delta distribution and only a single plausible output \cite{ghosh2017multi}. The resulting infogan based network was able to produce stochastic variations on the generated samples for the task of edges to handbags. We further show the efficacy of the model in the case when we have explicit class information and use it for a novel task of multi-class scribble to image generation. 
+
+
+

@@ -1,0 +1,146 @@
+
+
+
+\section{Introduction}
+%Deep generative models have seen incredible progress in terms of generating realistic images from random noise \cite{brock2018large}, \cite{karras2018style}.
+%Deep generative models using Generative Adversarial Nets (GANs) have shown remarkable promise for being able to generate realistic mappings between image domains, for example semantic labels\cite{isola2016image2image}, and edges~\cite{zhu2017unpaired}.
+%\pd{talk more about it, references are not enough.}
+%\ow{need to state the problem with these that we are solving}
+%\es{Here is how I would start:}
+
+Conditional GAN based image translation \cite{isola2016image2image,sangkloy2017scribbler,zhu2017unpaired} models showed remarkable success at taking an abstract user input such as an edge map or a semantic segmentation map and translating it to a real image. These methods run at interactive rates and combining them with a user interface allows the user to quickly create funny (unreal) looking images\todo{cite}. However, a few limitations prevent them from being used as a true interactive tool that assists the user in generating an image of an object they have in mind. First, the user is required to provide an entire abstract map as input (full edge or label map) which could be hard for many users as it is known that average people are not good at free-hand drawing of accurate proportions of objects and their parts~\cite{}, 3D shapes and perspective~\cite{ }. It is much easier with current image translation methods to obtain realistic looking images by editing existing images \cite{dekel2018sparse,portenier2018faceshop} ~\cite{ } than creating images from scratch. Second, current GAN-based image translation methods are limited to a single class of images. Switching from drawing a cat to a dog requires loading (or storing in memory) a new model per class.
+
+We propose a new GAN-based interactive image generation system that: 1) generates full images from {\em sparse} and {\em partial} user strokes as input; 2) serves as a \emph{recommender system} that suggests or helps the user, \emph{during} their creative process, in order to generate a desired image; and 3) uses a single conditional GAN for {\em multiple} image classes with an effective gating mechanism. Such a system allows for creative input to come from the user, while the challenging task of getting exact proportions correct is left to the GAN-based agent, who constantly predicts a plausible completion of the user stroke and a plausible image configuration related to that. 
+%These two suggestions or recommendations from the GAN agent will help the user to adapt the stroke depending on the type of object it is interested in.
+%In that context, our system learns mapping from the domain of easy-to-give user input (e.g., sparse strokes), to realistic images, while giving feedbacks to the user.
+%In this feedback loop, the user takes inspiration from the \emph{and} the learned model each condition their next steps based on the previous output of the other. 
+
+To address the first limitation of the above mentioned system we replace dense edge maps with sparse object outlines as the input representation, as outlines are closer to lines that novice users tend to draw than dense edge maps \cite{cole2008people}. We then train our model to first complete partial outlines to full ones and then generate the image conditioned on the completed outlines. We found this to work better than going directly from partial outlines to full images as the additional intermediate supervision on full outlines breaks the problem into two easier sub-problems -- first recover the geometric properties of the object (shape, proportions) and then fill-in the appearance (colors, textures). 
+
+There are several advantages to this two-stage approach.
+For one, we are able to give the artist feedback of the general object shape in our interactive interface (similar to \cite{lee2011shadowdraw}), allowing them to quickly refine the completed shape until it is satisfactory.
+Second, by separating the problem into two steps, we have greatly simplified the training challenge. We show in Sec.~\ref{sec:experiments} that sequential stroke completion followed appearance prediction is much more stable to train than predicting the appearance directly from partial strokes.
+
+Multi-class conditional generation is achieved using a novel gating mechanism conditioned on the input class label. Briefly, gating allows the network to focus on the important parts (or activations) of the network specific to the conditioning. Such an approach allows for a clean separation of classes, enabling us to train a single generator and discriminator to cleanly generate \emph{multiple} object classes based on this gating conditioning.
+
+To demonstrate the potential of our method as an interactive tool for stroke-based image generation we collected a new dataset of ten image classes. We focus on simple object classes on white backgrounds although we believe our method is general and can be applied for other image types and other types of sparse strokes. In order to stress test our gating mechanism, six (basketball, soccer, watermelon, orange, cookie, moon) of the objects had similar round outlines so the model is truly conditioned on the class label and cannot figure out the class only from the strokes. \pd{not sure: In addition, we also show that the gating helps infoGAN in learning multi-modal distribution for image to image translation task, which otherwise requires sophisticated models such as BicylceGAN, MAD-GAN,...}
+
+%In this work, we investigate using image-to-image translation in an interactive interface, where the network predictions serve as a \emph{recommender system} that suggests or helps the user, \emph{during} their creative process, in order to generate a desired image (Fig.~\figref{fig:teaser}). 
+%In that context, we are interested in mapping from the domain of easy-to-give user input (e.g., sparse strokes), to realistic images.
+%Such a system allows for creative input to come from the user, while the challenging task of getting exact proportions correct is left to the GAN-based agent, who constantly predicts the most plausible image configuration given the users inputs. 
+%In this feedback loop, the user \emph{and} the learned model each condition their next steps based on the previous output of the other. 
+
+%For example, imagine a scenario where a user wants the system to synthesize a real image of an object, say `strawberry', merely from the outline. 
+%n this case, it is too much to expect from the user to first draw the complete outline of the strawberry, and then ask the system to generate real images respecting the geometry of the outline. 
+%This would require the user to have a complete understanding of the shape of the strawberry. 
+%However, a more user-friendly system would be the one where the user gives a {\em partial outline}, like a starting point, of the strawberry as an input, and the system then recommends a plausible {\em completion} of the outline (specific to strawberries) and a synthesized image corresponding to that completion. This would help the user to take feed-backs from these two suggestions from the system, the complete outline and the synthesized image, and then keep on drawing the outline without the need of any external intervention or prior knowledge of the shape of the strawberry.
+%In order to train such a system, we split the problem of mapping sketches to images into two stages: a \emph{geometric} completion stage, followed by a \emph{texture} completion stage. 
+%Even though the above mentioned task is extremely useful in practice, no work has been done in this direction from generative modelling point of view \pd{not sure if we can write this.}. 
+%Furthermore, there are two main problems towards achieving a practical system -- (1) depending on the object category, a partial outline can have multiple completions; and 2) given a complete outline, again, multiple textures can be synthesized, depending on the desired object type. 
+%We provide a  simple and intuitive solution to these problems by using a conditional \emph{gating} approach. As shown in \todo{fig}, gating allows the network to focus on the important parts (or activations) of the specific to the conditioning. 
+%Such an approach allows for a clean separation of classes, enabling us to train a single generator and discriminator to cleanly generate \emph{multiple} object classes based on this gating conditioning.
+%We discuss this in detail in Section..  \pd{not sure if this is the right place to talk about gatings etc.}
+%Furthermore, we provide information theoretic explanation behind the efficacy of gating, and show that this simple modification to the architecture even allows {\em infoGAN} to learn multi-modal distribution for the image to image translation task, which otherwise requires sophisticated approaches such as BicycleGAN and MAD-GAN.
+%We create a dataset for the above said task and will release it for public use. 
+%In addition to proposing gating as a potential solution to the task, we also show that gating, in fact, allows the network to efficiently utilize its capacity which in turn allowed us to train a single GAN to perform image generation on multiple object categories. 
+
+%In detail,where the condition is a {\em partial outline} or {\em strokes}, and the objective is to first suggest or recommend a completion of this partial outline, depending on the object category we are interested in, and then, based on the completion, generate a realistic image (refer~\figref{fig:teaser}). In contrast to `edges' to `image' generation, this task is more useful in practice because of various obvious reasons -- (1) as opposed to outlines, edges require filling the internal structure (captures semantic information as well) with high precision which is an extremely tedious task when it comes to developing a user-friendly system, and (2) drawing partial outlines are easier and a `object-specific' auto-completion will help the user to complete the outline with precision.
+
+%Conservatively speaking, there are two main problems associated with the above said problem: 1) depending on the object category, a partial outline can have multiple completions; and 2) given a complete outline, again, multiple images can be synthesized from it depending on the object category.  We provide extremely simple and intuitive solutions to these problems, a crucial ingredient to which is the {\em gatings} introduced in the ResNet based GAN generator and discriminator architectures. We show that naive use of standard GAN is not enough to address these issues, and, propose fully residual block based discriminator and generator with {\em gatings} as a solution for that. Briefly, as shown in , gating allows the network to focus on the parts (or activations) of the network which is crucial for the given condition.   \pd{not sure if this is the right place to talk about gatings etc.}
+
+%\pd{not sure}
+%To address the first issue, we propose a data-driven approach where we curate dataset with pairs of partial-outlines and corresponding images, and use BicycleGAN type training with gated discriminator and generator to learn such mappings. Note, a naive approach of using a pix2pix architecture failed in this setting. Similarly, we design  
+
+%\pd{notes: partial outlines lead to real time, two stage process as single didn't work, partial to full outlines was trained using Gated-Bicycle GAN as normal GAN (pix2pix) or BiCycle GAN didnt work directly. BiCycle worked for single class, but pix2pix didn't even work for single. Arnab isn't sure if Bicycle with simple concatenation would work or not.}
+
+%There is a void left between the non image conditional setting and the image conditional setting in which only a few user guidelines should condition the image generation. 
+%\ow{danger: iGAN, FaceShop, SketchyGAN}
+%\pd{do we need this? too much i think}
+%Controllable Generations could be more important since users associate more with products they helped partially create which has been studied by cognitive psychologists and termed as the IKEA effect \cite{norton2012ikea}. 
+
+%User guided image synthesis is an important application case for GAN technology, however previous solutions have properties that make user interation non-intuitive. For example, they generate high quality images from random noise vectors~\cite{brock2018large,karras2018style}, or they generate images from edge maps~\cite{isola2016image2image,zhu2017unpaired}. \ow{same problem with the partial methods above, need to make our contributions more unique}
+%In this work, we address the user-guided image generation problem by proposing a new dataset of image outlines, and train a two stage model whereby user input is first completed then translated into images. 
+%We also propose a gated GAN model to handle class conditioning for the generated images, allowing us to generate multiple classes using the same model..
+
+%In pursuit of collaborative image generation between user and the machine we introduce a system whereby a user can generate real looking objects from a few strokes, whereby a network first automatically completes the strokes for the user honoring the user's strokes and another network generates images conditioned on the completed stroke image.
+
+%A naive solution might be to complete the image from the incomplete edge map to the final image but turns out that the generation of realistic images from partial edge maps is quite difficult for current systems. 
+%Another option could be to completing the edge maps themselves but current systems fail at that as well.
+
+%\pd{not sure}
+%Completing the outlines of the images turns out to be relatively much easier task, and we demonstrate on multiple settings the efficacy of our models on the task of completing outlines. Traditional pix2pix systems were designed to go from one input sketch to 1 output class of bags or shoes but in general objects come in multiple different shapes and several of those outlines could be similar and hence the low dimensional class information has to be properly injected into the network. Naive concatenation techniques demonstrates an innate problem of image conditional neural networks whereby the class conditioning fails to work in several settings. To mitigate the issue of conditioning of the image conditional networks we use class conditioned gating of the residual blocks for better conditioning.
+
+
+%Sketch RNN \cite{ha2017neural} was an attempt in that direction but required the intermediate stages of the sketches while training which is not always available. iGAN \cite{zhu2016generative} was a step in the direction of making GANs interactive but used a complex optimization based technique to obtain the closest image.
+
+% \section{Introduction}
+% Generative methods have made huge strides in the last few years, driven by the success of models such as Generative Adversarial Networks (GANs)~\cite{goodfellow2014generative} and Variational Autoencoders (VAEs)~\cite{kingma2013auto}.
+% % These methods can generate impressive results, but
+% One major challenge is that quality can degrade when the diversity of training data increases.
+% % (e.g., number of object/scene classes).
+% A common practice in conditional image conditional generation is to train different models for different tasks~\cite{isola2016image2image,karras2017progressive,zhu2017toward,zhu2017unpaired,wang2017high,wang2018video}, meaning that parameters scale linearly with the number of tasks.
+% %However their proposed method still involved training multiple generators.
+% % A study performed in \cite{ghosh2017multi,metz2017unrolledGAN} demonstrated that even in a simple 1D \& 2D Mixture of Gaussians settings, state-of-the-art GAN techniques were not able to generate samples from all the components of the mixture. 
+% This presents an intriguing opportunity -- ideally, a single network can solve multiple tasks. Such a network would have the flexibility to share operations applicable across tasks, while dedicating resources responsible for task-specific operations.
+% % An ideal scenario in such settings would involve a single network which could share parts responsible for similar operations across classes while unsharing the discrete parts of the network which are responsible for class specific operations.
+
+% % Such a scenario was analyzed in the realm of
+% In image classification, Veit et al.~\cite{veit2016residual} show, through lesion experiments, that a Residual Network~\cite{he2016deep} implicitly allows information flow through multiple paths. Follow-up work~\cite{veit2018adaptive} aims to explicitly specialize different paths for different classes~\cite{veit2018adaptive}.
+% % In image classification, Veit et al.~\cite{veit2016residual} perform incision experiments on a pretrained ResNet architecture~\cite{he2016deep}, demonstrating that certain paths in the network play a more important role for certain classes.
+% %inferring that ResNets behave like an ensemble of several partially disjoint networks for image classification. 
+% In this paper, we analyze the implications of this observation in a generative modeling scenario. 
+% We analyze GANs on a 1D Mixture of Gaussians distribution, as used in~\cite{ghosh2017multi}, and discover that removal of blocks corresponds to the disappearance of certain modes in the generated distribution.
+
+% Motivated by this, we introduce a simple {\em soft-gating} mechanism, where a hypernetwork on the conditioning input determines which blocks of a ResNet to use.
+% % to use for that particular conditioning.
+% We explore and analyze different types of gating, including {\em blockwise} and {\em channelwise} gating, each with multiplicative and affine variations, as well as related methods for incorporating conditioning information. We draw connections to AdaIn~\cite{huang2017arbitrary,huang2018multimodal} and InfoGAN~\cite{chen2016infogan}. We show that channelwise multiplicative gating performs best for our task, and better results can be obtained by gating not only the generator, but also the discriminator.
+
+% To evaluate our approach, we introduce a new task of generating multiclass images from rough outline scribbles, where class ambiguities are especially challenging. Fig.~\ref{fig:teaser} (top-left) shows one such example, where the same circular outline yields different outputs, conditioned on ten different classes.
+% In the unsupervised InfoGAN~\cite{chen2016infogan} setting, where classes are not known apriori, conditioning is in the form of a random vector. 
+% While this scenario was previously shown to produce limited texture variation~\cite{ghosh2017multi} for challenging datasets using naive concatenation-based conditioning, our method is able to produce diverse generations, as shown in Fig.~\ref{fig:teaser} (top right).
+% In addition, we evaluate our approach on {\em multitask image-to-image translation}. 
+% In its original setting \cite{isola2016image2image}, individual models were used for each translation tasks. 
+% Our gating mechanism enables good performance of a single network on multiple tasks by activating appropriate task-specific blocks and channels (Fig.~\ref{fig:teaser} bottom).
+
+% %whereby the rough scribbles divulge almost no information about the class.
+
+
+
+% %%The technique presented a scenario in which we could generate multiple modes for a single dataset but it could further be used for generating multiple modes from a dataset consisting of multiple classes and the hypernetwork could choose the blocks needed for a particular class. 
+
+
+
+
+% %%Furthermore we perform a systematic analysis of all meaningful gating mechanisms and other forms of conditioning in the setting of a image conditioned generative model. This paper also finds that gating also enables the discriminator to provide better class conditioned gradients back to the generator for high quality generations.
+
+
+% % Generative methods have made huge strides in the last few years driven by the success of Variational Autoencoders (VAEs)~\cite{kingma2013auto} and Generative Adversarial Networks (GANs)~\cite{goodfellow2014generative}. 
+% % While these methods can generate impressive results, one major challenge is that quality degrades quickly when the diversity of training data (e.g., number of object/scene classes) increases, especially when the manifold of the multi-class distribution of images drawn from the ground truth distribution is not continuous. \ow{um... I don't really get this previous sentence}
+
+% % We propose a solution to generate multi-class images using a form of class conditioning that outperforms prior class conditioned GANs while requiring significantly fewer parameters than using a single GAN per-class. 
+% % To do this, we take advantage of the fact that different classes will share similar visual features, and propose an architecture wherein a fully-residual GAN generator and discriminator, is combined with a second ``gating'' network, which determines how the network is conditioned on the input class.
+
+% % We compare various forms of gating, such as concatenating one-hot class information, auxillary classification, \todo{...}.
+
+% % We evaluate our gating approach on a number of applications \todo{...}
+% % \ow{discuss evaluation and findings}
+
+% In summary, our contributions are:
+% \vspace{-2mm}
+% % \setlength\itemsep{0px}
+% % \begin{itemize}
+% \begin{itemize}[noitemsep]
+% % \itemsep0em 
+% % \item An in-depth analysis of the role of gating networks in generative modeling.
+% % \item an in-depth analysis of the role of gating networks in generative modeling
+% \item a systematic analysis of variants for injecting conditioning into a generative model
+% \item a novel \textit{soft-gating} mechanism, which enables effective incorporation of a conditioning vector in multiclass (class-conditioned), multimodal (latent code-conditioned), and multitask (task-conditioned) image-to-image translation settings
+% % \item A novel architecture using a soft-gating hypernetwork that can generate diverse, multiclass results both when classes are known apriori, or are derived from the data in an unsupervised fashion.
+% % (similar to InfoGAN~\cite{chen2016infogan}).
+% %\item Incision experiments on a trained Residual Generator based GAN on the 1D Mixture of Gaussians to show certain blocks correspond to certain modes in the generated distribution.
+% %\item Introduction of the Gated Residual Blocks and the Hypernetwork to predict the corresponding alphas on the Generator and Discriminator.
+% \item introduction of a challenging outline$\rightarrow$image dataset
+% % of generating realistic images from a rough outline.
+% \end{itemize}
+
+% \vspace{-1mm}
