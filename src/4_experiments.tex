@@ -34,15 +34,115 @@
 
 \section{Experiments}
 \label{sec:experiments}
-
 %\subsection{Datasets}
-
-To explore the efficacy of our full pipeline, we introduce a new outline dataset, consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple.\es{where are images coming from?}
-In each image, we obtain rough outlines for the image. \ow{how?}
+To explore the efficacy of our full pipeline, we introduce a new outline dataset, consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple. The images were collected using search keywords on popular search engines.
+% \es{where are images coming from?}
+In each image, we obtain rough outlines for the image. We find the largest blob in the image after thresholding it into a black and white image since the images are in a white background. We fill the interior holes of the largest blob and obtain the smooth outline using Savitzky–Golay filter\cite{savitzky1964smoothing}
+% \ow{how?}
 
 Unlike the edge-to-image datasets used in previous~work~\cite{isola2016image2image,zhu2017unpaired,wang2017high}, our outlines contain significantly less edge information. 
 As we show in our experiments, this dataset lets us provide the user with quicker feedback from fewer strokes as a result. 
 Additionally, the outline dataset is more challenging as it contains several object classes with similar shapes (cookie, basketball, soccer, watermelon, orange, moon). This represents better real-life image content and forces the sketch-to-image network to effectively integrate class information to be successful in this setting.
+
+\subsection{Shape Completion}
+\begin{figure}[h!]%[ht!]
+\centering
+\small
+\begin{tabular}{*{3}{c@{\hspace{3px}}}}
+    \frame{ \includegraphics[width=.30\linewidth]{images/ablation_shoes/partial_outline.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_edges.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_outlines.png}}
+    \\
+    %
+    \begin{subfigure}[t]{.30\linewidth}\caption{Input}
+    \label{fig:basketball_partial}\end{subfigure} &
+    \begin{subfigure}[t]{.30\linewidth}\caption{PE trained} \label{fig:basketball_full}\end{subfigure} &
+    \begin{subfigure}[t]{.30\linewidth}\caption{PO trained} \label{fig:soccer_partial}\end{subfigure} \\
+    %
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/autocompleted.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/pretrained_test_autocompleted.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/test_autocompleted.png}} 
+    \\
+    
+
+    \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{Completion}} \label{fig:soccer_full}\end{subfigure} &
+    \begin{subfigure}[t]{.30\linewidth}\caption{FE trained}\label{fig:cupcake_partial}\end{subfigure} &
+    \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{FO trained}} \label{fig:cupcake_full}\end{subfigure}\\
+\end{tabular} \\
+\normalsize
+    \caption{\textbf{Efficacy of using outlines:} In the first row the networks trained on partial edges (PE) and partial outlines (PO) are tested with small strokes provided by the user but fails to generate plausible results. The second row provides an autocompleted outline provided by our network and takes it an input to full edge (FE) and full outline (FO) to image trained networks, respectively. Note the model trained on full edges could not generate a plausible image even if a full outline was given as an input.}
+    \label{fig:ablation_partialedge_full_outline}
+\end{figure}
+
+As mentioned in~\secref{sec:shape}, we simulate partial strokes by removing random square patches of different sizes from the dataset we created and use BicycleGAN~\cite{zhu2017toward} model for the training which works surprisingly well for the shape completion task. Few completion examples are shown in \pd{Figure here}. 
+
+\paragraph{Why outlines, not edges?} During training, choosing edges, instead of outlines, seems a reasonable choice as edges provide more information about the internal structure of the object. However, as shown in \figref{fig:ablation_partialedge_full_outline} \& \figref{fig:ablation_partial_edge_completion}, when the network is trained on partial edges (created similar to partial outlines) and tested with just a few user strokes, the completion fails miserably. We suspect that this behaviour is due to the increased dependency of the network towards inputs with detailed internal structure. Practically speaking, using the data generation process in which random chunks of the edgemap are occluded, it is hard for the network to discern which parts are missing by design and which parts are missing by random chance and becomes a much harder problem for the autocompletion network. When the autocomplete network is trained on partial outlines, occlusion indicates the regions where the network has to accurately fill the endpoints with a curve that represents the geometry of the boundary for that particular class. Since variations in each class geometry is limited, this task is relatively easier than filling the edgemap. Even though having a system that can recommend edge completions given few strokes would be of extreme importance, we believe that it requires specific architecture and loss design, along with careful data augmentaion, and leave it as a future problem to work on. Outline to real generations is the first step in that direction.
+
+\paragraph{Why two-stage approach?} As mentioned, partial outline to image generation inherently requires solving two tasks, shape completion and texture filling. As demonstrated in \figref{fig:ablation_partial_full_outline}, in the multi-class dataset when the network is trained on partial outlines to full images, when large chunks of the user input is missing, it struggles in generating the right geometry for the particular class while if the generation network is given the full completed outline it generates quite plausible results for that particular category. In fact, training produces even better results than just training on outline to images since the automated procedure creates a \pd{regularization effect and the network has to work harder in order to generate realistic texture from the sparse user inputs. not sure about this.}
+
+%As shown in \figref{fig:ablation_partial_full_outline} when the network is trained with partial outlines and partial edges and tested with just a few user strokes both fail to generate realistic generations. As shown in the second row, when a pretrained network trained on edges2shoes is tested with just the boundary it generates a silver shoe although it misses out on generating realistic texture cues since the training data consisted of texture cues in the map and the translation network could rely on the texture cues provided in the input edge map and without its presence its unable to produce realistic generation. The network trained on outlines to real images is capable of generating realistic shoe images from an automatically completed outline from the sparse user cues thus showing the efficacy of the 2 step process. 
+
+%\es{why is this interesting? The only interesting case is when the input is sparse outline strokes as we expect to have from a novice user. Partial edge maps as an input are less interesting, and don't deserve a special figure and half a page of text, I think.}
+
+%\es{This section needs a major rewrite. It seems like it is not only about outlines vs. edges but about why our two stage network (partial outlines-full outlines-image) is better than a one stage (partial outlines->image), as well as the analogues with edge maps - (partial edges-full edges->image) and (full edges->image). We don't have to describe the failures of other variants, just point to the user study table and ref to the figure for a visual comparison.}
+
+
+
+\begin{figure}[h!]%[ht!]
+\centering
+\begin{tabular}{*{4}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/partial_outline.png}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/partial_outline_edge_complete.png}} &
+    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/full_outline.png}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/full_outline_edge_complete.png}}
+    \\
+    
+    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
+\end{tabular} \\
+    \caption{\textbf{Partial Outlines $\rightarrow$ Edges} (Trained on autocompletion of full edges). The images in the blue frames represent the input partial edge to the network. It illustrates that when sparse user input is used it produces incompatible completions and even if the full outline is provided it fails to produce decent texture strokes.}
+    \label{fig:ablation_partial_edge_completion}
+    \vspace{-3mm}
+\end{figure}
+
+
+%\paragraph{Why direct appearance synthesis from partial outlines $\rightarrow$ images not efficient?}
+
+
+
+\begin{figure}[h!]%[ht!]
+\centering
+\begin{tabular}{*{6}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_partial_outline.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_full_outline.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_partial_outline.png}} & 
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_full_outline.png}}&
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_partial_outline.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_full_outline.png}}
+    \\
+    
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_partial_outline_gen.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_full_outline_gen.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_partial_outline_gen.png}} & 
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_full_outline_gen.png}}&
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_partial_outline_gen.png}} &
+    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_full_outline_gen.png}}
+    \\
+    
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
+\end{tabular}
+    \caption{\textbf{Direct Partial Outline $\rightarrow$ Image} Illustrating that when the outline is well defined the network can generate nice results but when the outline is sparse the network struggles with the geometry.}
+    \label{fig:ablation_partial_full_outline}
+    \vspace{-3mm}
+\end{figure}
+
 
 
 %To additional validate our approach on existing edges2shoes and edges2handbags datasets~\cite{isola2016image2image}.
@@ -67,11 +167,12 @@ Additionally, the outline dataset is more challenging as it contains several obj
     \vspace{-2mm}
 \end{figure*}
 
-\subsection{Architecture and Gating Comparisons}
-
+\subsection{Appearance Generation}
+%\paragraph{Architecture and Gating Comparisons}
 We compare our proposed model to the residual \textbf{Encoder-Decoder} model~\cite{huang2018multimodal}.
+\pd{Should we put the gating figure? Or refer to the supplementary?}
 %In addition, we evaluate and analyze different gating variants and report the most effective one in the context of the outline-to-image generation task.
-In addition, we compare our proposed gating strategy and SkinnyResNet architecture~\es{did we mention this name?} to the following methods for  conditional image generation: \begin{itemize}[noitemsep]
+In addition, we compare our proposed gating strategy and SkinnyResNet architecture to the following methods for  conditional image generation: \begin{itemize}[noitemsep]
 \item{\bf Per-class}: a single generator for each category; this is the only test setting with \textit{multiple} networks, all others train a single network
 \item{\bf Concat (In)}: naive concatenation, input layer only
 \item{\bf Concat (All)}: naive concatenation, all layers
@@ -87,7 +188,7 @@ We constrain each element of {\boldmath $\alpha$} and {\boldmath $\beta$} in $[-
 X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath $\beta$}
 \end{equation}
 
-\figref{fig:alg_comp} shows the efficacy of Gating on the task outline to image generation. Naive conditioning techniques fail to properly condition the class and the Visual Turing Test in terms of Amazon Mechanical Turk's realism scores are shown in \figref{fig:acc_vs_real}.
+\figref{fig:alg_comp} shows the efficacy of Gating on the task outline to image generation. Naive conditioning techniques fail to properly condition the class. Gating allows the condition (class) to be an active part of the generation process which helps the network to easily distinguish different conditions. The Visual Turing Test in terms of Amazon Mechanical Turk's realism scores are shown in \figref{fig:acc_vs_real}.
 
 \begin{figure*}[ht]
   \centering
@@ -140,7 +241,7 @@ X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath
 
 Inter-class variation, also called diversity, is a significant challenge in GAN image generation applications. 
 In the pix2pix setting, as shown by previous works \cite{ghosh2017multi} and \cite{zhu2017toward} even the InfoGAN (cLR in \cite{zhu2017toward}) setup was not able to produce meaningful variations (irrespective of the variations in the conditioning), and additional generators or cyclical losses were required to produce meaningful variations in the generated images. 
-With our gating mechanism, we show that we can create meaningful variations, using just the InfoGAN objective, in the generated samples conditioned on a single sketch.
+With our gating mechanism, we show that we can create meaningful variations, using just the InfoGAN objective.
 This can be seen in the results \figref{fig:infogan_gate} and from the LPIPS metric \cite{zhang2018unreasonable} in  Table. \ref{table:infogan_lpips} which measures the diversity among the generations in the feature space of a standard Imagenet classifier.
 % Since InfoGAN maximizes mutual information, we argue that gating provides a mechanism to effectively optimize it by making the conditioning an active part of the generation process (refer Sec.~\ref{sec:infoGAN}).
 
@@ -168,100 +269,27 @@ This can be seen in the results \figref{fig:infogan_gate} and from the LPIPS met
     \caption{\label{table:infogan_lpips} {\bf Edges$\rightarrow$Handbags Diversity.} LPIPSv0.1~\cite{zhang2018unreasonable} distance between randomly generated handbags, given the same edge map, as proposed in~\cite{zhu2016generative}. Given the same architecture, gating achieves higher diversity than concatenation.}
 \end{table}
 
-\section{Analysis}
-%\subsection{Outlines vs. Edges}
 
-\begin{figure}[h!]%[ht!]
-\centering
-\begin{tabular}{*{3}{c@{\hspace{3px}}}}
-    \frame{ \includegraphics[width=.30\linewidth]{images/ablation_shoes/partial_outline.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_edges.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_outlines.png}}
-    \\
-    
-    \begin{subfigure}[t]{.30\linewidth}\caption{Partial Outline}\label{fig:basketball_partial}\end{subfigure} &
-    \begin{subfigure}[t]{.30\linewidth}\caption{Trained on Partial Edges}\label{fig:basketball_full}\end{subfigure} &
-    \begin{subfigure}[t]{.30\linewidth}\caption{Trained on Partial Outlines}\label{fig:soccer_partial}\end{subfigure} \\
-    
-    
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/autocompleted.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/pretrained_test_autocompleted.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/test_autocompleted.png}} 
-    \\
-    
+% \subsection{Autocomplete Data Generation:}
 
-    \begin{subfigure}[t]{.30\linewidth}\caption{Autocompleted Outline}\label{fig:soccer_full}\end{subfigure} &
-    \begin{subfigure}[t]{.30\linewidth}\caption{Off the shelf trained on Edges}\label{fig:cupcake_partial}\end{subfigure} &
-    \begin{subfigure}[t]{.30\linewidth}\caption{Trained on Outlines}\label{fig:cupcake_full}\end{subfigure}\\
-\end{tabular} \\
-    \caption{\textbf{Efficacy of using outlines:} In the first row the networks trained on partial edges and partial outlines are tested with small strokes provided by the user but fails to generate plausible results. The second row provides an autocompleted outline provided by the network and results on off the shelf network pretrained on edges and tested with the outline and the final image shows plausible generation using a network trained on outlines.}
-    \label{fig:ablation_partial_full_outline}
-    \vspace{-3mm}
-\end{figure}
+% \begin{figure}[h!]%[ht!]
+% \centering
+% \begin{tabular}{*{4}{c@{\hspace{3px}}}}
+%     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/original.png}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/64.png}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/128.png}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/192.png}}\\
+%     \vspace{-1mm}
+%     \begin{subfigure}[t]{.22\linewidth}\caption{Outline}\end{subfigure} &
+%     \begin{subfigure}[t]{.22\linewidth}\caption{64x64}\end{subfigure} &
+%     \begin{subfigure}[t]{.22\linewidth}\caption{128x128}\end{subfigure} &
+%     \begin{subfigure}[t]{.22\linewidth}\caption{192x192}\end{subfigure} \\
+% \end{tabular} \\
+%     \caption{\textbf{Autocomplete Training Data Creation:} 3 sizes (64x64,128x128,192x192) of white colored occluders were used for simulating partial edges }
+%     \label{fig:autocomplete_data_generation}
+%     \vspace{-3mm}
+% \end{figure}
 
-\paragraph{Why is training with outlines better than edges?}
-
-\es{This section needs a major rewrite. It seems like it is not only about outlines vs. edges but about why our two stage network (partial outlines->full outlines->image) is better than a one stage (partial outlines->image), as well as the analogues with edge maps - (partial edges->full edges->image) and (full edges->image). We don't have to describe the failures of other variants, just point to the user study table and ref to the figure for a visual comparison.}
-
-As shown in \figref{fig:ablation_partial_full_outline} when the network is trained with partial outlines and partial edges and tested with just a few user strokes both fail to generate realistic generations. As shown in the second row, when a pretrained network trained on edges2shoes is tested with just the boundary it generates a silver shoe although it misses out on generating realistic texture cues since the training data consisted of texture cues in the map and the translation network could rely on the texture cues provided in the input edge map and without its presence its unable to produce realistic generation. The network trained on outlines to real images is capable of generating realistic shoe images from an automatically completed outline from the sparse user cues thus showing the efficacy of the 2 step process. \es{why is this interesting? The only interesting case is when the input is sparse outline strokes as we expect to have from a novice user. Partial edge maps as an input are less interesting, and don't deserve a special figure and half a page of text, I think.}
-
-\begin{figure}[h!]%[ht!]
-\centering
-\begin{tabular}{*{4}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/edge_completion_shoes/input_048_input.png}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_completion_shoes/input_048_random_sample01.png}} &
-    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/edge_completion_shoes/input_049_input.png}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_completion_shoes/input_049_random_sample01.png}}
-    \\
-    
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
-\end{tabular} \\
-    \caption{\textbf{Partial Edges $\rightarrow$ Edges} Illustrating that when large chunks of the edges are missing it either produces incompatible completions or doesn't complete at all. The images in the blue frames represent the input partial edge}
-    \label{fig:ablation_partial_edge_completion}
-    \vspace{-3mm}
-\end{figure}
-
-As demonstrated in \figref{fig:ablation_partial_edge_completion} even when the autocompletion network is trained on a single class it fails to generate plausible completions in the edgemap space from a few user cues in the edgemap domain. We argue that its hard because using an automated edge detection software produces incomplete representations in the edgemap space and using the data generation process in which random chunks of the image are occluded by an occluder, its hard for the network to discern which parts are missing by design and which parts are missing by random chance and becomes a much harder problem for the autocompletion network. When the autocomplete network is trained on outlines most of the case its a closed contour with no missing holes in the representation and the occlusion indicates the regions where the network has to accurately fill the endpoints with a curve that represents the geometry of the boundary for that particular class.
-
-\paragraph{Why direct appearance synthesis from partial outlines $\rightarrow$ images not efficient?}
-
-
-
-\begin{figure}[h!]%[ht!]
-\centering
-\begin{tabular}{*{6}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_partial_outline.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_full_outline.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_partial_outline.png}} & 
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_full_outline.png}}&
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_partial_outline.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_full_outline.png}}
-    \\
-    
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_partial_outline_gen.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/basketball_full_outline_gen.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_partial_outline_gen.png}} & 
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/soccer_full_outline_gen.png}}&
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_partial_outline_gen.png}} &
-    \frame{\includegraphics[width=.15\linewidth]{images/ablation_images/cupcake_full_outline_gen.png}}
-    \\
-    
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
-\end{tabular}
-    \caption{\textbf{Direct Partial Outline $\rightarrow$ Image} Illustrating that when the outline is well defined the network can generate nice results but when the outline is sparse the network struggles with the geometry.}
-    \label{fig:ablation_partial_full_outline}
-    \vspace{-3mm}
-\end{figure}
-
-As demonstrated in \figref{fig:ablation_partial_full_outline} we see in the multi-class dataset that when the network is trained on partial outlines to full images, when large chunks of the user input is missing it struggles in generating the right geometry for the particular class while if the generation network is given the full completed outline it generates quite plausible results for that particular category. In fact training produces even better results than just training on outline to images since the automated procedure creates a regularization effect and the network has to work harder in order to generate realistic texture from the spaarse user inputs.
 
 
 

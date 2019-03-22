@@ -4,9 +4,9 @@
     \includegraphics[width=\linewidth,trim={2.6cm 0 1.8cm 0},clip]{paper_images/mog.pdf}
     % \includegraphics[width=\linewidth]{paper_images/mog.pdf}
     \caption{{\bf 1D Mixture of Gaussians.} {\bf (Left)} Samples from a residual network (blue-dotted) closely approximate the training distribution (black). {\bf (Mid)} Removing one residual block removes one mode of the predicted distribution. {\bf (Right)} Removing two blocks drops two modes. Note that samples stay mostly ``on-manifold" of the ground truth distribution.
-    \vspace{-2mm}
+    %\vspace{-2mm}
     }\label{fig:onedexperiment}
-    \vspace{-3mm}
+    %\vspace{-3mm}
 \end{figure*}
 
 % \section{Methodology (New)}
@@ -37,6 +37,7 @@
 
 \begin{figure*}[ht]%[ht!]
 \centering
+\resizebox{1.0\linewidth}{!}{
 \begin{tabular}{*{10}{c@{\hspace{3px}}}}
     \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/basketball.png}} &
     \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
@@ -81,32 +82,54 @@
     % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
     % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
 \end{tabular}
+}
     \caption{\textbf{Complete \& Generate results}.
-    A few strokes as shown in the first row is enough to automatically complete the class specific outlines and further generate class specific generations. \es{replace orange and chicken. maybe also moon and cupcake.}}
-    
-    % \ow{seems like this is missing 1. two generators, and 2. one generator. instead it seems more like an ablation study on our method, which is not the point. would be more impressive to show it matches 2 generators and 1 generator totally fails.}
+    A few strokes as shown in the first row is enough to automatically complete the class specific outlines and further generate class specific generations. }
+    % \es{replace orange and chicken. maybe also moon and cupcake.}}
     
     \label{fig:autocomplete_generate}
-    \vspace{-3mm}
+    %\vspace{-3mm}
 \end{figure*}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{paper_images/isf_method_v2.pdf}
+    \includegraphics[width=\linewidth]{paper_images/isf_method_v3.pdf}
     \caption{Training the model to generate realistic outlines from partial strokes using $G_S$ (Shape Generator) and generating real images from outlines using $G_A$ (Appearance Generator), alongside the discriminators for the respective domains of $D_S$ (Shape Discriminator) and $D_A$ (Appearance Discriminator).
     }\label{fig:SketchFillNet}
-    \vspace{-2mm}
+    %\vspace{-2mm}
 \end{figure}
 
 \section{Method}
-We decouple the problem of interactive image generation into two stages: shape completion from sparse user strokes, and appearance synthesis from the completed outlines. \es{we need to refer to Fig.~\ref{fig:SketchFillNet} and use it's terminology $G_S$, $G_A$, ...}
+We decouple the problem of interactive image generation into two stages: shape completion from sparse user strokes, and appearance synthesis from the completed outlines. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape completion generation and the Appearance Generator $G_A$ for the generating the final image as well as the adversary discriminators $D_S$ and $D_A$. %To ensure that the generated shape completions and appearance completions are accurate for their respective domains we use the Shape Discriminator $D_S$ and the Appearance Discriminator $D_A$.
+% \es{we need to refer to Fig.~\ref{fig:SketchFillNet} and use it's terminology $G_S$, $G_A$, ...}
 %A naive method of bypassing this two step process and generating the final image from the partial strokes yielded sub-par results demonstrated in Section \ref{sec:experiments} hence necessitating the 2 step process. 
 %A potential reason for the failure of the direct process is because it requires understanding category-specific geometry and the category-specific texture. Learning both jointly is difficult.
 
+\begin{figure}[h!]%[ht!]
+\centering
+\begin{tabular}{*{4}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/original.png}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/64.png}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/128.png}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/192.png}}\\
+    \vspace{-1mm}
+    \begin{subfigure}[t]{.22\linewidth}\caption{Outline}\end{subfigure} &
+    \begin{subfigure}[t]{.22\linewidth}\caption{64x64}\end{subfigure} &
+    \begin{subfigure}[t]{.22\linewidth}\caption{128x128}\end{subfigure} &
+    \begin{subfigure}[t]{.22\linewidth}\caption{192x192}\end{subfigure} \\
+\end{tabular} \\
+    \caption{\textbf{Autocomplete Training Data Creation:} 3 sizes (64x64,128x128,192x192) of white colored occluders were used for simulating partial edges }
+    \label{fig:autocomplete_data_generation}
+    %\vspace{-3mm}
+\end{figure}
+
 \subsection{Shape completion}
-The shape completion network should provide the user with a visualization of its best guess for the completed shape, based on the available input from the user and updated interactively. 
+\label{sec:shape}
+The shape completion network $G_S$ should provide the user with a visualization of its best guess for the completed shape, based on the available input from the user and updated interactively. 
 %For an interactive user interface to be effective, the network has to generate an estimated full image shape as the user adds sparse input. 
-To train this network, we simulate partial strokes by removing random square patches of different size from the full outline image. \es{probably need more details here - size of squares, how many per image, total training data size etc.}
+To train this network, we simulate partial strokes by removing random square patches of different size from the full outline image. 
+The square patches were of 3 sizes (64x64, 128x128, 192x192) and the top left corner was placed randomly in the image. For each outline image 3 sizes of occluders was used and for each sized occluder 25 partial outline images were generated by placing the occluder's top left corner at random positions in the image. An illustration can be seen in \figref{fig:autocomplete_data_generation}
+% \es{probably need more details here - size of squares, how many per image, total training data size etc.}
 Automatically generating data in this manner creates a dataset where multiple different partial outlines are created from a single outline image.
 We found that the BicycleGAN model~\cite{zhu2017toward} performed well on this task, and we train it, unmodified, on this partial stroke data (Fig.~\ref{fig:infogan_gate}, top left).
 
@@ -158,8 +181,8 @@ We make the corresponding changes in the discriminator as well.
 %Soft-gating has been explored by Veit et al.~\cite{veit2018adaptive} in a classification setting. 
 We found that this approach for gating provides the strongest results. 
 
-We additionally explored incorporating shifting after the soft-gating, either block-wise using a scalar $\beta \in [-1,1]$ per layer, or channel-wise using a vector $\mbox{\boldmath $\beta$} \in [-1, 1]^c$ per layer.
-\ow{but found that they did not help much, and so we leave them out of our final model?}
+We additionally explored incorporating shifting after the soft-gating, either block-wise using a scalar $\beta \in [-1,1]$ per layer, or channel-wise using a vector $\mbox{\boldmath $\beta$} \in [-1, 1]^c$ per layer but we found that they did not help much, and so we leave them out of our final model.
+% \ow{but found that they did not help much, and so we leave them out of our final model?}
 
 Finally, we describe our network architecture. 
 We base our architecture on the proposed residual \textbf{Encoder-Decoder} model from MUNIT~\cite{huang2018multimodal}.

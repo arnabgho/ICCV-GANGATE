@@ -1,18 +1,17 @@
 \begin{abstract}
-\vspace{-1mm}
-Effectively incorporating low-dimensional conditioning is a crucial, yet relatively unexplored, aspect of multiclass, multimodal, and multitask image-to-image translation.
-% Effectively incorporating low-dimensional conditioning information is an important, yet relatively unexplored, aspect of image generation, enabling multiclass, multimodal, and multitask image-to-image translation.
-We systematically investigate variants of injecting conditioning into GAN architectures. We propose a soft-gating mechanism, which learns to ``select" which parts of a ResNet~\cite{he2016deep} are used, based on the conditioner.
-% We propose a mechanism to learn these injections through ``gating" over residual blocks.
-% The proposed technique
-% gating function
-% enables plausible generations in multiclass scenarios, where commonly-used naive concatenation fails.
-% We show that learning a gating function allows us to generate plausible samples in multiclass image-to-image translation tasks.
-We validate on a challenging outline-to-image task, mapping from a sparse sketch with no internal structure. Class conditioning is especially important, and the soft-gating mechanism enables plausible generations where naive concatenation fails.
-The method is also effective on standard sketch-to-image and day-to-night tasks.
-Additionally, the gating better fulfills the InfoGAN~\cite{chen2016infogan} objective, maximizing mutual information between the output and the conditioner,
+In this work, we propose an interface where a GAN agent assists a casual user to draw simple objects. 
+The user adds sparse scribbles for the object shape, and a GAN agent completes these scribbles into a full object shape. 
+It then performs a translation from completed shape to image.
+In order to be able to use a single model for a wide array of object classes, we introduce a gating based approach for class conditioning, which allows us to generate distinct classes without feature mixing, from a single generator network.
+
+%Effectively incorporating low-dimensional conditioning is a crucial, yet relatively unexplored, aspect of multiclass, multimodal, and multitask image-to-image translation.
+%We systematically investigate variants of injecting conditioning into GAN architectures. We propose a soft-gating mechanism, which learns to ``select" which parts of a ResNet~\cite{he2016deep} are used, based on the conditioner.
+%We validate on a challenging outline-to-image task, mapping from a sparse sketch with no internal structure. 
+%Class conditioning is especially important, and the soft-gating mechanism enables plausible generations where naive concatenation fails.
+%The method is also effective on standard sketch-to-image and day-to-night tasks.
+%Additionally, the gating better fulfills the InfoGAN~\cite{chen2016infogan} objective, maximizing mutual information between the output and the conditioner,
 % in an effective way,
-enabling diverse generations for image-to-image translation. 
+%enabling diverse generations for image-to-image translation. 
 % We demonstrate that our approach is able to generate high quality multiclass image translations, outperforming prior state-of-the-art methods.
 
 %We propose a method that allows us to generate images belonging to multiple domains using a single network.
