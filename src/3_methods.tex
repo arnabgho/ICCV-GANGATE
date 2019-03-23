@@ -53,7 +53,7 @@ The shape completion network $G_S$ should provide the user with a visualization 
 To train this network, we simulate partial strokes by removing random square patches from the full outline image. 
 The patches are of three sizes (64x64, 128x128, 192x192) and are placed at a random location in the image (of size 256x256). An illustration can be seen in \figref{fig:autocomplete_data_generation}
 % \es{probably need more details here - size of squares, how many per image, total training data size etc.}
-Automatically generating data in this manner creates a dataset where 25 different partial outlines are created from a single outline image.
+Automatically generating data in this manner creates a dataset where 75 different partial outlines are created from a single outline image.
 We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the shape completion task, and we train it, unmodified, on pairs of partial-full outline images. %(Fig.~\ref{fig:infogan_gate}, top left).
 
 \begin{figure}[t]
