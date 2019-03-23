@@ -138,7 +138,15 @@ Adobe Research\\
 
 \maketitle
 
-
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth]{paper_images/arch_inject2.pdf}
+    \caption{{\bf Conditioning injection variants.}
+    The conditioner can be naively incorporated in a generator through simple concatenation in {\bf (left)} the input layer only or {\bf (mid-left)} in all layers. {\bf (mid)} The network can be further encouraged to use the conditioning through a learned network, using either a classification objective for categorical conditioning~\cite{odena2016conditional,chen2016infogan} or a regression objective for continuous conditioning. {\bf (Mid-right)} We train a network on the conditioner to predict parameters which guide softly-gated units in the main network. {\bf (Right)} These conditioning options can be correspondingly applied to a discriminator. We propose using soft-gating on the discriminator as well.\label{fig:arch-inj}
+    \vspace{-2mm}
+    }
+    \vspace{-2mm}
+\end{figure*}
 \begin{figure*}[t]
 \centering
 \begin{tabular}{*{3}{c@{\hspace{3px}}}}

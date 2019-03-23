@@ -1,13 +1,15 @@
-\label{sec:methods}
-\begin{figure*}[t]
+\begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth,trim={2.6cm 0 1.8cm 0},clip]{paper_images/mog.pdf}
-    % \includegraphics[width=\linewidth]{paper_images/mog.pdf}
-    \caption{{\bf 1D Mixture of Gaussians.} {\bf (Left)} Samples from a residual network (blue-dotted) closely approximate the training distribution (black). {\bf (Mid)} Removing one residual block removes one mode of the predicted distribution. {\bf (Right)} Removing two blocks drops two modes. Note that samples stay mostly ``on-manifold" of the ground truth distribution.
+    \includegraphics[width=\linewidth]{paper_images/isf_method_v3.pdf}
+    \caption{Training the model to generate realistic outlines from partial strokes using $G_S$ (Shape Generator) and generating real images from outlines using $G_A$ (Appearance Generator), alongside the discriminators for the respective domains of $D_S$ (Shape Discriminator) and $D_A$ (Appearance Discriminator).
+    }\label{fig:SketchFillNet}
     %\vspace{-2mm}
-    }\label{fig:onedexperiment}
-    %\vspace{-3mm}
-\end{figure*}
+\end{figure}
+
+
+
+\label{sec:methods}
+
 
 % \section{Methodology (New)}
 % First talk about the two inherent problems: partial (interactive) to full (task1), and outline to image (task2). mention that jointly training didn't work, analysis provided in the experiment section, so we go for two stage training. One potential reason for the joint training to fail would be that task1 requires understanding category-specific geometry and task2 requires filling the category-specific texture. Learning both jointly is difficult.
@@ -35,77 +37,26 @@
 %     \item you can also talk about the 1D experiments here
 % \end{itemize}
 
-\begin{figure*}[ht]%[ht!]
-\centering
-\resizebox{1.0\linewidth}{!}{
-\begin{tabular}{*{10}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/basketball.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/watermelon.png}} & 
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/orange.png}}&
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/cookie.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/moon.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/strawberry.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/pineapple.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/cupcake.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/chicken.png}}
-    \\
-    
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/basketball.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/soccer.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/watermelon.png}} & 
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/orange.png}}&
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/cookie.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/moon.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/strawberry.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/pineapple.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/cupcake.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/chicken.png}}
-    \\
-    
-    
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/basketball.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/soccer.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/watermelon.png}} & 
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/orange.png}}&
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/cookie.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/moon.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/strawberry.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/pineapple.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/cupcake.png}} &
-    \frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/chicken.png}}
-    \\
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
-\end{tabular}
-}
-    \caption{\textbf{Complete \& Generate results}.
-    A few strokes as shown in the first row is enough to automatically complete the class specific outlines and further generate class specific generations. }
-    % \es{replace orange and chicken. maybe also moon and cupcake.}}
-    
-    \label{fig:autocomplete_generate}
-    %\vspace{-3mm}
-\end{figure*}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{paper_images/isf_method_v3.pdf}
-    \caption{Training the model to generate realistic outlines from partial strokes using $G_S$ (Shape Generator) and generating real images from outlines using $G_A$ (Appearance Generator), alongside the discriminators for the respective domains of $D_S$ (Shape Discriminator) and $D_A$ (Appearance Discriminator).
-    }\label{fig:SketchFillNet}
-    %\vspace{-2mm}
-\end{figure}
 
 \section{Method}
-We decouple the problem of interactive image generation into two stages: shape completion from sparse user strokes, and appearance synthesis from the completed outlines. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape completion generation and the Appearance Generator $G_A$ for the generating the final image as well as the adversary discriminators $D_S$ and $D_A$. %To ensure that the generated shape completions and appearance completions are accurate for their respective domains we use the Shape Discriminator $D_S$ and the Appearance Discriminator $D_A$.
+We decouple the problem of interactive image generation into two stages: shape completion from sparse user strokes, and appearance synthesis from the completed outlines. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape (outline) completion generation and the Appearance Generator $G_A$ for the generating the final image as well as the adversary discriminators $D_S$ and $D_A$. %To ensure that the generated shape completions and appearance completions are accurate for their respective domains we use the Shape Discriminator $D_S$ and the Appearance Discriminator $D_A$.
 % \es{we need to refer to Fig.~\ref{fig:SketchFillNet} and use it's terminology $G_S$, $G_A$, ...}
 %A naive method of bypassing this two step process and generating the final image from the partial strokes yielded sub-par results demonstrated in Section \ref{sec:experiments} hence necessitating the 2 step process. 
 %A potential reason for the failure of the direct process is because it requires understanding category-specific geometry and the category-specific texture. Learning both jointly is difficult.
 
-\begin{figure}[h!]%[ht!]
+
+\subsection{Shape completion}
+\label{sec:shape}
+The shape completion network $G_S$ should provide the user with a visualization of its best guess for the completed shape, based on user input and is updated interactively. 
+%For an interactive user interface to be effective, the network has to generate an estimated full image shape as the user adds sparse input. 
+To train this network, we simulate partial strokes by removing random square patches from the full outline image. 
+The patches are of three sizes (64x64, 128x128, 192x192) and are placed at a random location in the image (of size 256x256). An illustration can be seen in \figref{fig:autocomplete_data_generation}
+% \es{probably need more details here - size of squares, how many per image, total training data size etc.}
+Automatically generating data in this manner creates a dataset where 25 different partial outlines are created from a single outline image.
+We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the shape completion task, and we train it, unmodified, on pairs of partial-full outline images. %(Fig.~\ref{fig:infogan_gate}, top left).
+
+\begin{figure}[t]
 \centering
 \begin{tabular}{*{4}{c@{\hspace{3px}}}}
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/original.png}} &
@@ -123,20 +74,20 @@ We decouple the problem of interactive image generation into two stages: shape c
     %\vspace{-3mm}
 \end{figure}
 
-\subsection{Shape completion}
-\label{sec:shape}
-The shape completion network $G_S$ should provide the user with a visualization of its best guess for the completed shape, based on the available input from the user and updated interactively. 
-%For an interactive user interface to be effective, the network has to generate an estimated full image shape as the user adds sparse input. 
-To train this network, we simulate partial strokes by removing random square patches of different size from the full outline image. 
-The square patches were of 3 sizes (64x64, 128x128, 192x192) and the top left corner was placed randomly in the image. For each outline image 3 sizes of occluders was used and for each sized occluder 25 partial outline images were generated by placing the occluder's top left corner at random positions in the image. An illustration can be seen in \figref{fig:autocomplete_data_generation}
-% \es{probably need more details here - size of squares, how many per image, total training data size etc.}
-Automatically generating data in this manner creates a dataset where multiple different partial outlines are created from a single outline image.
-We found that the BicycleGAN model~\cite{zhu2017toward} performed well on this task, and we train it, unmodified, on this partial stroke data (Fig.~\ref{fig:infogan_gate}, top left).
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth,trim={2.6cm 0 1.8cm 0},clip]{paper_images/mog.pdf}
+    % \includegraphics[width=\linewidth]{paper_images/mog.pdf}
+    \caption{{\bf 1D Mixture of Gaussians.} {\bf (Left)} Samples from a residual network (blue-dotted) closely approximate the training distribution (black). {\bf (Mid)} Removing one residual block removes one mode of the predicted distribution. {\bf (Right)} Removing two blocks drops two modes. Note that samples stay mostly ``on-manifold" of the ground truth distribution.
+    %\vspace{-2mm}
+    }\label{fig:onedexperiment}
+    %\vspace{-3mm}
+\end{figure*}
 
 \subsection{Appearance synthesis}
 %We use a conditional GAN formulation for generating images from outlines as shown by the efficacy in \cite{isola2016image2image,zhu2017toward}. 
 An ideal interactive sketch-to-image system  should be able to generate multiple different image classes with a single generator. 
-Beside memory and time considerations (avoiding loading/using a separate model per class, reduce overall memory), a single network can share features related to outline recognition and texture generation that are common across classes, which helps training with limited examples per class. 
+Beside memory and time considerations (avoiding loading/using a separate model per class, reduce overall memory), a single network can share features related to outline recognition and texture generation that are common across classes, which helps training with limited examples per class. \es{Didn't we already said that in the intro? If yes we should remove/significantly shorten}
 
 As we later show, existing class conditioning-by-concatenation techniques fail to properly condition the network about the class information in current image translation networks~\cite{isola2016image2image,zhu2017toward}.
 
@@ -191,7 +142,9 @@ First, we deepen the network, based on the principle that deeper networks have m
 To enable the larger number of residual blocks, we drastically reduce the width to 32 channels for every layer. 
 We refer to this network as \textbf{SkinnyResNet}. 
 Additionally, we found that modifying the downsampling and upsampling blocks to be residual connections as well improved results, and also enables us to apply gating to {\em all} blocks. 
-When gating is used, the gate prediction network, $\mathcal{F}$ in Fig.~\ref{fig:arch-inj} (mid-right, right) is also designed using residual blocks. Additional architecture details are in the supplementary material. 
+When gating is used, the gate prediction network, $\mathcal{F}$ 
+%Fig.~\ref{fig:arch-inj} (mid-right, right) 
+is also designed using residual blocks. Additional architecture details are in the supplementary material. 
 
 
 
@@ -208,6 +161,60 @@ The purpose of the gating network, is to learn which blocks (or more specificall
 
 
 
+\begin{figure}[t]%[ht!]
+\centering
+\resizebox{1.0\linewidth}{!}{
+\begin{tabular}{*{5}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/scribble/basketball.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/scribble/watermelon.png}} & 
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/scribble/orange.png}}&
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/scribble/cookie.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/moon.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/strawberry.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/scribble/pineapple.png}}
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/cupcake.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/chicken.png}}
+    \\
+    
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/autocomplete/basketball.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/soccer.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/autocomplete/watermelon.png}} & 
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/autocomplete/orange.png}}&
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/autocomplete/cookie.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/moon.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/strawberry.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/autocomplete/pineapple.png}}
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/cupcake.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/autocomplete/chicken.png}}
+    \\
+    
+    
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/image/basketball.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/soccer.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/image/watermelon.png}} & 
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/image/orange.png}}&
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/image/cookie.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/moon.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/strawberry.png}} &
+    \frame{\includegraphics[width=.2\linewidth]{images/autocomplete_generate/image/pineapple.png}}
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/cupcake.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/image/chicken.png}}
+    \\
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:soccer_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
+\end{tabular}
+}
+    \caption{\textbf{Sketch \& Fill results}.
+    A few input strokes in the first row are enough to automatically complete the class specific outlines and further generate class specific fills. }
+    % \es{replace orange and chicken. maybe also moon and cupcake.}}
+    \label{fig:autocomplete_generate}
+    %\vspace{-3mm}
+\end{figure}
 % \section{Method}
 % Interactive Image Generation can be thought of as a sequence of constraints given by the user and the subsequent addition of more constraints based on the geometry or texture constraints provided by the user. In such a constraint based setting a Generative Model has the freedom to choose how to generate a realistic real image honoring the constraints and allowing the freedom to generate as realistically as possible in the unconstrained areas. A system which can generate realistic final images starting from few strokes acting as constraints and honoring constraints at all times would be interactive provided we have fast enough feedforward processing through the network.
 
