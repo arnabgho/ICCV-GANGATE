@@ -12,6 +12,7 @@
 \usepackage{multirow}
 \usepackage{amsbsy}
 \usepackage{array, caption, floatrow, tabularx, makecell, booktabs}%
+\usepackage{animate}
 
 
 \usepackage{xcolor}
@@ -156,7 +157,7 @@ Adobe Research\\
     % \vspace{-20mm}
     \includegraphics[width=1.\linewidth]{paper_images/teaser_v7.pdf}
     \vspace{-6mm}
-    \captionof{figure}{({\bf Top}) Given sparse user input (first row), our model estimates the complete shape and provides this a recommendation to the user (shown in gray), along with the final drawn object (second row). These estimates are updated as the user adds strokes (shown in \textcolor{green}{green}), and removes strokes (shown in \textcolor{red}{red}) -- previous edits are shown in black.
+    \captionof{figure}{({\bf Top}) Given sparse user input (first row), our model estimates the complete shape and provides this as a recommendation to the user (shown in gray), along with the final synthesized object (second row). These estimates are updated as the user adds strokes (shown in \textcolor{green}{green}), and removes strokes (shown in \textcolor{red}{red}) -- previous edits are shown in black.
     This generation is class conditioned, and our method is able to generate distinct multiple objects for the same outline (\eg `circle'), by conditioning the generator on the object category ({\bf Bottom}).\label{fig:teaser}
     }
 \end{center}%

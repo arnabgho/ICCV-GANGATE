@@ -37,12 +37,14 @@
 %\subsection{Datasets}
 To explore the efficacy of our full pipeline, we introduce a new outline dataset, consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple. The images have all a white background and were collected using search keywords on popular search engines.
 % \es{where are images coming from?}
-In each image, we obtain rough outlines for the image. We find the largest blob in the image after thresholding it into a black and white image. We fill the interior holes of the largest blob and obtain a smooth outline using the Savitzky–Golay filter\cite{savitzky1964smoothing}
+In each image, we obtain rough outlines for the image. We find the largest blob in the image after thresholding it into a black and white image. We fill the interior holes of the largest blob and obtain a smooth outline using the Savitzky–Golay filter~\cite{savitzky1964smoothing}.
 % \ow{how?}
 
 Unlike the edge-to-image datasets used in previous~work~\cite{isola2016image2image,zhu2017unpaired,wang2017high}, our outlines are significantly sparser. 
 As we show in our experiments, this dataset lets us provide the user with quicker feedback from fewer strokes as a result. 
-Additionally, the outline dataset is more challenging as it contains several object classes with similar shapes (cookie, basketball, soccer, watermelon, orange, moon). This represents better real-life image content that may share geometric properties and forces the sketch-to-image network to effectively integrate class information to be successful in this setting.
+However, one challenge of using a simplified dataset is that multiple object classes can have similar outlines (e.g., cookie, basketball, soccer, orange, moon are all round).
+As such, properly integrating conditioning information is essential to be able to generate realistic images across multiple classes.
+%This represents better real-life image content that may share geometric properties and forces the sketch-to-image network to effectively integrate class information to be successful in this setting.
 
 \subsection{Shape Completion}
 \begin{figure}[t]%[ht!]
@@ -70,17 +72,25 @@ Additionally, the outline dataset is more challenging as it contains several obj
     % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{FO trained}} \label{fig:cupcake_full}\end{subfigure}\\
 \end{tabular} \\
 \normalsize
-    \caption{\textbf{Efficacy of outlines:} Networks trained on partial edges (PE) produce worse quality results than those trained on partial outlines (PO) (top). Similarly, an appearance synthesis model trained on full edges (FE) does not work as well as a network trained on full outlines (FO) when given outlines as an input (bottom).}
+    \caption{\textbf{Efficacy of outlines:} Networks trained on partial edges (PE) produce worse quality results than those trained on partial outlines (PO) when applied to real human input (top). Similarly, an appearance synthesis model trained on full edges (FE) does not work as well as a network trained on full outlines (FO) when given simplified sketches as input (bottom).}
     \label{fig:ablation_partialedge_full_outline}
 \end{figure}
 
-As mentioned in~\secref{sec:shape}, we simulate partial strokes in our dataset by removing random square patches and use BicycleGAN~\cite{zhu2017toward} model for training. Few completion examples are shown in \figref{fig:autocomplete_generate}.
+As mentioned in~\secref{sec:shape}, we simulate partial strokes in our dataset by removing random square patches and use BicycleGAN~\cite{zhu2017toward} model for training. We show some completion examples in \figref{fig:autocomplete_generate}.
 % \pd{Figure here}. 
 
-\paragraph{Why outlines, not edges?} During training, choosing edges, instead of outlines, seems a reasonable choice as edges provide more information about the internal structure of the object. However, as shown in \figref{fig:ablation_partialedge_full_outline} \& \figref{fig:ablation_partial_edge_completion}, when the network is trained on partial edges (created similar to partial outlines) and tested with just a few user strokes, the completion fails miserably. We suspect that this behaviour is due to the increased dependency of the network towards inputs with detailed internal structure. Practically speaking, using the data generation process in which random chunks of the edgemap are occluded, it is hard for the network to discern which parts are missing by design and which parts are missing by random chance and becomes a much harder problem for the shape generation network. When the shape generation network is trained on partial outlines, occlusion indicates the regions where the network has to accurately fill the endpoints with a curve that represents the geometry of the boundary for that particular class. Since variations in each class geometry is limited, this task is relatively easier than filling the edgemap. Even though having a system that can recommend edge completions given few strokes would be of extreme importance, we believe that it requires specific architecture and loss design, along with careful data augmentaion, and leave it as a future problem to work on. Outline to real generations is the first step in that direction.
+We evaluate outlines vs edges, and 1-step vs 2-step generation in Table \ref{table:2step_eval}. We use a data generation process on the test set to produce partial edges or outlines on the test set, generating multiple occluded edge/outlines to simulate partial user strokes. We then translate, either from the input to image directly, or with a 2-step process. In order to ascertain the quality of generation we use an Inception~\cite{szegedy2016rethinking} network, finetuned on our multi-class dataset. Using off-the-shelf networks to judge the fidelity of results is often used in generation tasks, such as colorization~\cite{zhang2016colorful} and generative modeling~\cite{salimans2016improved}. We report the average classification accuracy over the classes for the generated results by the different techniques.
 
-\paragraph{Why two-stage approach?} As mentioned, partial outline to image generation inherently requires solving two tasks, shape completion (shape generation) and texture filling (appearance generation). As demonstrated in \figref{fig:ablation_partial_full_outline}, in the multi-class dataset when the network is trained on partial outlines to full images, when large chunks of the user input is missing, it struggles in generating the right geometry for the particular class while if the generation network is given the full completed outline it generates quite plausible results for that particular category. 
-In fact, training produces even better results than just training on outline to images in a similar vein why denoising autoencoders \cite{vincent2010stacked} work better than simple autoencoders.
+\paragraph{Why outlines, not edges?} Edges offer the advantage of providing more information about the internal structure of the object. However, as shown in \figref{fig:ablation_partial_edge_completion} \&
+\figref{fig:ablation_partialedge_full_outline}, when the network is trained on partial edges (created using the same method as our partial outline dataset) and tested with just a few user strokes, the completion fails miserably. We suspect that this behaviour is due to the increased dependency of the network towards inputs with detailed internal structure. In Table~\ref{table:2step_eval}, for both the 1-step and 2-step pipelines, systems which use partial outlines generate more realistic results than with partial edges.
+%Practically speaking, using the data generation process in which random chunks of the edgemap are occluded, it is hard for the network to discern which parts are missing by design and which parts are missing by random chance and becomes a much harder problem for the shape generation network. 
+%When the shape generation network is trained on partial outlines, occlusion indicates the regions where the network has to accurately fill the endpoints with a curve that represents the geometry of the boundary for that particular class. Since variations in each class geometry is limited, this task is relatively easier than filling the edgemap. 
+%While having a system that can recommend abstract shape completion from arbitrary internal edges would be useful, we believe it is of extreme importance, we believe that it requires specific architecture and loss design, along with careful data augmentaion, and leave it as a future problem to work on. Outline to real generations is the first step in that direction.
+
+\paragraph{Why two-stage approach?} As mentioned, partial outline to image generation inherently requires solving two tasks, shape completion (shape generation) and texture filling (appearance generation). As demonstrated in \figref{fig:ablation_partial_full_outline}, in the multi-class dataset when the network is trained on partial outlines to full images, it struggles in generating the right geometry for the missing regions. As shown in Table \ref{table:2step_eval}, given partial inputs, we observe that our 2-step process, using outlines as input, produces generations which are classified more accurately.
+
+%particular class while if the generation network is given the full completed outline it generates quite plausible results for that particular category. 
+%In fact, training produces even better results than just training on outline to images in a similar vein why denoising autoencoders \cite{vincent2010stacked} work better than simple autoencoders.
 % since the automated procedure creates a \pd{regularization effect and the network has to work harder in order to generate realistic texture from the sparse user inputs. not sure about this.}
 
 %As shown in \figref{fig:ablation_partial_full_outline} when the network is trained with partial outlines and partial edges and tested with just a few user strokes both fail to generate realistic generations. As shown in the second row, when a pretrained network trained on edges2shoes is tested with just the boundary it generates a silver shoe although it misses out on generating realistic texture cues since the training data consisted of texture cues in the map and the translation network could rely on the texture cues provided in the input edge map and without its presence its unable to produce realistic generation. The network trained on outlines to real images is capable of generating realistic shoe images from an automatically completed outline from the sparse user cues thus showing the efficacy of the 2 step process. 
@@ -109,6 +119,32 @@ In fact, training produces even better results than just training on outline to 
     \label{fig:ablation_partial_edge_completion}
     \vspace{-3mm}
 \end{figure}
+
+
+
+% \subsection{Two-Stage Shape and Appearance Generation Evaluation}
+
+\begin{table}[t]
+    \centering
+        \begin{tabular}{l c}
+        % \hline
+        \toprule
+        \textbf{Trained task} & \textbf{Avg Acc} \\ \midrule
+        % PE $\rightarrow$ Image & 73.12 \% \\
+        % PO $\rightarrow$ Image & 88.74 \% \\
+        % EC $\rightarrow$ FE $\rightarrow$ Image & 45.96 \% \\
+        % OC $\rightarrow$ FO $\rightarrow$ Image \textbf{[Ours]} & \textbf{97.38\%}  \\
+        Partial edges $\rightarrow$ Image & 73.12 \% \\
+        Partial outline $\rightarrow$ Image & 88.74 \% \\
+        Partial edges $\rightarrow$ Full edges $\rightarrow$ Image & 45.96 \% \\
+        % \cdashline{1-2}
+        Partial outline $\rightarrow$ Full outline $\rightarrow$ Image [Ours] & \textbf{97.38\%}  \\
+        \bottomrule %inserts single line
+        \end{tabular}
+    \caption{\label{table:2step_eval} \textbf{Shape + Appearance Generation Evaluation}. We evaluate the result quality from different task pipelines. Accuracy is computed by a fixed, pretrained classification network, on the resulting images.
+    % Evaluates the result quality from different trained task pipelines, including Partial Edges (PE), Partial Outlines (PO), Edge Completion (EC), Full Edges (FE), Outline Completion (OC), and Full Outlines (FO). Accuracy is computed by a fixed, pretrained classification network, on the resulting images.
+    }
+\end{table}
 
 
 %\paragraph{Why direct appearance synthesis from partial outlines $\rightarrow$ images not efficient?}
@@ -165,7 +201,7 @@ In fact, training produces even better results than just training on outline to 
   \centering
   \begin{minipage}[t]{0.48\linewidth}  
   \centering
-  \resizebox{0.9\linewidth}{!} {
+  \resizebox{1.\linewidth}{!} {
   \setlength{\tabcolsep}{6pt}
   \begin{tabular}{l c c c c}
   \toprule
@@ -189,7 +225,7 @@ In fact, training produces even better results than just training on outline to 
 	\end{tabular} } 
   \end{minipage}\begin{minipage}[]{0.48\linewidth}
   \centering
-  \includegraphics[width=.9\linewidth]{paper_images/gen_real_vs_acc.pdf} 
+  \includegraphics[width=1.\linewidth]{paper_images/gen_real_vs_acc.pdf} 
   \end{minipage}
   \caption{\small {\bf Accuracy vs Realism on Outline$\rightarrow$Image task.} We measure generation accuracy by using a pretrained network to check whether the generated image is of the correct class and realism using the user-judged real vs. fake test from ~\cite{zhang2016colorful,isola2016image2image} conducted on Amazon Mechanical Turk (AMT). Higher is better for both metrics. Our SkinnyResNet architecture outperforms the Encoder-Decoder network, inspired by MUNIT~\cite{huang2018multimodal}. We perform a thorough ablation on our architecture, and find that channel-wise gating achieves high accuracy and higher realism. The right figure shows the correlation between the two tasks.
   \vspace{-4mm}
@@ -219,30 +255,19 @@ X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath
 \end{equation}
 Please see the supplemental material for a more thorough description.
 %\pd{Should we put the gating figure? Or refer to the supplementary?}
-
-
 \figref{fig:alg_comp} shows the efficacy of Gating on the task outline to image generation. Naive conditioning techniques fail to properly condition the class. Gating allows the condition (class) to be an active part of the generation process which helps the network to easily distinguish different conditions. The Visual Turing Test in terms of Amazon Mechanical Turk's realism scores are shown in \figref{fig:acc_vs_real}.
 
-\subsection{Shape + Appearance Evaluation:}
-In order to automate the evaluation of the 2 step process of Shape Generation and Appearance Generation, we use a similar data generation process on the test set of the multi-class dataset. We generate multiple different occluded outlines to emulate the partial strokes that the user would be drawing. We then use the previously mentioned approaches to generate the final image either directly from the partial input or via a 2 step process. In order to ascertain the quality of generation we use a finetuned inception network on our multi-class dataset and report the average classification accuracy over the classes for the generated results by the different techniques. As shown in Table. \ref{table:2step_eval} we can see that our 2 step process produces results which has the best classification accuracy.
 
-\begin{table}[h]
-    \centering
-        \begin{tabular}{l c}
-        % \hline
-        \toprule
-        \textbf{Model} & \textbf{Avg. Accuracy} \\ \midrule
-        PE Trained & 73.12 \% \\
-        PO Trained & 88.74 \% \\
-        EC + FE Trained & 45.96 \% \\
-        OC + FO Trained \textbf{[Ours]} & \textbf{97.38\%}  \\
-        \bottomrule %inserts single line
-        \end{tabular}
-    \caption{\label{table:2step_eval} {\textbf{Shape + Appearance Generation Evaluation:} PE Trained: trained from Partial Edges $\rightarrow$ Images; PO Trained: trained from Partial Outlines $\rightarrow$ Images; EC : Edge Completion ; FE Trained: trained on Full Edges $\rightarrow$ Images; OC: Outline Completion; FO Trained: trained on Full Outlines $\rightarrow$ Images } }
-\end{table}
 %For the shape completion network, we use the BicycleGAN model~\cite{zhu2017toward}, and for the image generation network, we use a gated SkinnyResNet model so take full advantage of the class conditioning. 
 %We first describe our dataset (new) which contains pairs of sparse scribbles and images.
 %As seen in \figref{fig:autocomplete_generate} with just a few strokes the user is able to generate full images belonging to their desired class.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=.9\linewidth]{paper_images/cond_comp2.pdf}
+    \caption{{\bf Conditioning injection comparison.} We show results across methods on the outline$\rightarrow$image task using the \textbf{SkinnyResNet} architecture. Naive Concatenation \textbf{Concat} often confuses classes, such as oranges and basketballs, while gating mechanisms such as the \textbf{ChannelGate} method succeed. The gating method also improves results for the \textbf{EncoderDecoder} architecture. \label{fig:alg_comp} }
+    \vspace{-4mm}
+\end{figure*}
 
 \subsection{Multimodal Generation}
 \label{sec:multimodal}
@@ -306,13 +331,6 @@ This can be seen in the results \figref{fig:infogan_gate} and from the LPIPS met
 
 
 
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=.9\linewidth]{paper_images/cond_comp2.pdf}
-    \caption{{\bf Conditioning injection comparison.} We show results across methods on the outline$\rightarrow$image task using the \textbf{SkinnyResNet} architecture. Naive Concatenation \textbf{Concat} often confuses classes, such as oranges and basketballs, while gating mechanisms such as the \textbf{ChannelGate} method succeed. The gating method also improves results for the \textbf{EncoderDecoder} architecture. \label{fig:alg_comp} }
-    \vspace{-4mm}
-\end{figure*}
 
 % \section{Experiments Old}
 
