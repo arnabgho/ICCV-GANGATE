@@ -1,19 +1,25 @@
-\begin{figure}
-	\centering
-	\animategraphics[autoplay,loop,width=\linewidth]{25}{images/gif/}{00001}{00266} 
-	\caption{This video shows our user interface. \textbf{Please view with Acrobat Reader.}}
-\end{figure}
+% \begin{figure}
+% 	\centering
+% 	\animategraphics[autoplay,loop,width=\linewidth]{25}{images/gif/}{00001}{00266} 
+% 	\caption{This video shows our user interface. \textbf{Please view with Acrobat Reader.}}
+% \end{figure}
 
 \section{Discussion}
 
 \paragraph{Limitations}
 One limitation of this work is that we have designed it to be extremely easy to use, meaning that the control the user has over the image is restricted to shape (contour) cues. 
-If the user wanted to modify internal lines, such as lines on the basketball, this is not possible yet. 
-However, Users cannot draw internal textures yet. The only input is on object shape.
+Adding or modifying internal lines, such as lines on the basketball, is not currently possible. Our system also does not support changing directly color or texture. 
+Adding additional control, without undesirable complexity in an interesting challenge for future work. 
 
 \paragraph{Conclusion}
-We have presented an evaluation of different gating mechanisms to allow for multiclass image generation using GANs. 
-We propose an auxiliary channelwise gating network for conditioning combined with a skinny ResNet, and show that this combination improves state-of-the-art results in both class-conditioned and unsupervised settings.
+In conclusion, we have presented a two-stage approach for interactive object generation, centered around the idea of a shape completion intermediary. 
+This step both makes training more stable, but also allows us to give coarse geometric feedback to the user, which they can choose to integrate as they desire. 
+
+
+%In the end, this is one step towards intelligent creative tools that allow even novice users
+
+%We have presented an evaluation of different gating mechanisms to allow for multiclass image generation using GANs. 
+%We propose an auxiliary channelwise gating network for conditioning combined with a skinny ResNet, and show that this combination improves state-of-the-art results in both class-conditioned and unsupervised settings.
 
 %Its interesting to observe that with a simple residual block on the non-parametric density estimation task, the removal of certain blocks corresponds to the removal of modes in the generated distribution and the incision of different blocks corresponding to the removal of the same mode from the generated distribution shows the validity of the claims in \cite{veit2016residual} which says that residual networks behave as an ensemble of several shallower networks. 
 

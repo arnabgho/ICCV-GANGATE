@@ -38,7 +38,7 @@
 % \end{itemize}
 
 \section{Method}
-We decouple the problem of interactive image generation into two stages: outline (or object shape) completion from sparse user sketches, and appearance synthesis from the completed outline. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape (outline) generation and the Appearance Generator $G_A$ for generating the final image as well as the adversary discriminators $D_S$ and $D_A$. 
+We decouple the problem of interactive image generation into two stages: outline (or object shape) completion from sparse user sketches, and appearance synthesis from the completed outline. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape (outline) generation and the Appearance Generator $G_A$ for generating the final image as well as the adversary discriminators $D_S$ and $D_A$. The method can be seen effective in the user interface in \figref{fig:gui}.
 %To ensure that the generated shape completions and appearance completions are accurate for their respective domains we use the Shape Discriminator $D_S$ and the Appearance Discriminator $D_A$.
 % \es{we need to refer to Fig.~\ref{fig:SketchFillNet} and use it's terminology $G_S$, $G_A$, ...}
 %A naive method of bypassing this two step process and generating the final image from the partial strokes yielded sub-par results demonstrated in Section \ref{sec:experiments} hence necessitating the 2 step process. 
@@ -54,6 +54,12 @@ The patches are of three sizes (64$\times$64, 128$\times$128, 192$\times$192) an
 We automatically generate data in this manner creating a dataset where 75 different partial outlines are created from a single outline image.
 We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the shape completion task, and we train it, unmodified, on pairs of partial-full outline images. %(Fig.~\ref{fig:infogan_gate}, top left).
 
+\begin{figure}[t!]
+	\centering
+	\animategraphics[autoplay,loop,width=\linewidth]{25}{images/gif/}{00001}{00266} 
+	\caption{Our interface. \textbf{Please view with Acrobat Reader.}} \label{fig:gui}
+\end{figure}
+
 \begin{figure}[t]
 \centering
 \begin{tabular}{*{4}{c@{\hspace{3px}}}}
@@ -61,16 +67,27 @@ We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the sh
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/64.png}} &
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/128.png}} &
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/192.png}}\\
-    \vspace{-1mm}
-    \begin{subfigure}[t]{.22\linewidth}\caption{Outline}\end{subfigure} &
-    \begin{subfigure}[t]{.22\linewidth}\caption{64x64}\end{subfigure} &
-    \begin{subfigure}[t]{.22\linewidth}\caption{128x128}\end{subfigure} &
-    \begin{subfigure}[t]{.22\linewidth}\caption{192x192}\end{subfigure} \\
+    Outline &
+    64x64&
+    128x128 &
+    192x192\\
 \end{tabular} \\
     \caption{\textbf{Autocomplete Training Data Creation:} 3 sizes (64$\times$64,128$\times$128,192$\times$192) of white colored occluders were used for simulating partial edges.}
     \label{fig:autocomplete_data_generation}
-    %\vspace{-3mm}
 \end{figure}
+
+\begin{figure*}[t]
+    \centering
+    % \includegraphics[width=\linewidth]{paper_images/arch_gate.pdf}
+    \includegraphics[width=1.\linewidth]{paper_images/arch_gate2.pdf}
+    \caption{
+    % {\bf Incorporating soft-gating into residual blocks.} \rz{Order got changed, may or may not need to add key for hadamard product}
+    {\bf (Top-left)} A ``vanilla" residual block without gated conditioning parameters modifies input tensor $X$ into $X+\mathcal{H}(X)$. Conditioning with concatenation uses this setup. {\bf (Top-mid)} The $\mathcal{H}(X)$ block is softly-gated by scalar parameter $\alpha$ and shift $\beta$. {\bf (Top-right)} Only the gating is used, without bias. {\bf (Bot-left)} Adaptive Instance Normalization~\cite{huang2017arbitrary} applies a channel-wise scaling and shifting after an instance normalization layer. {\bf (Bot-mid)} Channel-wise gating adds restrictions to the range of $\mbox{\boldmath $\alpha$}$. {\bf (Bot-right)} We find that channel-wise gating (without added bias) to empirically produce the best results.\label{fig:arch-gate}
+    \vspace{-2mm}
+    }
+    % \vspace{-4mm}
+\end{figure*}
+
 
 \begin{figure*}[t]
     \centering
@@ -89,7 +106,7 @@ Beside memory and time considerations (avoiding loading/using a separate model p
 
 As we later show, existing class conditioning-by-concatenation techniques fail to properly condition the network about the class information in current image translation networks~\cite{isola2016image2image,zhu2017toward}.
 %
-To address this, we propose an effective soft gating mechanism.
+To address this, we propose an effective soft gating mechanism, shown in Figure~\ref{fig:arch-gate}.
 Conceptually, our network consists of a small external gating network that is conditioned on the object class (encoded as a 1-hot vector).
 The gating network outputs parameters that are used to modify the features of the main generator network.
 We now describe this architecture in detail.
@@ -115,7 +132,7 @@ If the conditioning vector ${\bf y}$ has no use for a particular block, it can p
 % , and use that layer instead for other classes.
 During training, blocks within the main network can transform the image in various ways, and $\mathcal{F}$ can modulate such that the most useful blocks are selected. 
 Unlike previous feature map conditioning methods such as AdaIn~\cite{ulyanovinstance}, we apply gating to \emph{both} the generator and discriminator. 
-Intuitively, in GANs, this can enable the discriminator to select blocks which effectively judge whether generations are real or fake, conditioned on the class input.
+This enables the discriminator to select blocks which effectively judge whether generations are real or fake, conditioned on the class input.
 % Via accurate gradients backpropagated to the generator it also enables the generator to generate class conditioned high resolution image samples.
 Some blocks can be shared across regions in the conditioning vector, whereas other blocks can specialize for a given class.
 
@@ -123,13 +140,16 @@ A more powerful method is to apply this weighting channel-wise using a vector {\
 \begin{align}
 X + \mbox{\boldmath $\alpha$} \odot \mathcal{H}(X), \text{where } \mbox{\boldmath $\alpha$} \in [0,1]^c 
 \end{align}
-Where $\odot$ represents channel-wise multiplication. This provides additional degrees of freedom, allowing specific channels to be switched ``on" or ``off". 
-We make the corresponding changes in the discriminator as well. 
+Where $\odot$ represents channel-wise multiplication. This allows specific channels to be switched ``on" or ``off", providing additional degrees of freedom.
+%We make the corresponding changes in the discriminator as well. 
 %Soft-gating has been explored by Veit et al.~\cite{veit2018adaptive} in a classification setting. 
 We found that this channelwise approach for gating provides the strongest results. 
 
 We additionally explored incorporating a bias term after the soft-gating, either block-wise using a scalar $\beta \in [-1,1]$ per layer, or channel-wise using a vector $\mbox{\boldmath $\beta$} \in [-1, 1]^c$ per layer but we found that they did not help much, and so we leave them out of our final model.
 % \ow{but found that they did not help much, and so we leave them out of our final model?}
+
+
+
 
 Finally, we describe our network architecture. 
 We base our architecture on the proposed residual \textbf{Encoder-Decoder} model from MUNIT~\cite{huang2018multimodal}.
@@ -141,21 +161,6 @@ Additionally, we found that modifying the downsampling and upsampling blocks to 
 When gating is used, the gate prediction network, $\mathcal{F} ({\bf y})$,  
 %Fig.~\ref{fig:arch-inj} (mid-right, right) 
 is also designed using residual blocks. Additional architecture details are in the supplementary material. 
-
-
-
-\subsection{Insights on Gating Mechanism}
-We demonstrate the intuition behind this type of gating by a toy experiment in ~\figref{fig:onedexperiment} where a generative network models a one dimensional mixture of Gaussians, comprised of five components. 
-For this test, the generator and discriminator architectures consist of only residual blocks, where each residual block is composed of fully connected layers. 
-Additional details are in the supplementary material. 
-
-The generator is conditioned on a latent vector $z$, and is trained to approximate the distribution, as seen in Fig.~\ref{fig:onedexperiment} (left). 
-Removing a single residual block, in the spirit of~\cite{veit2016residual}, leads to the disappearance of a mode from the predicted distribution. 
-Removal of another block leads to further removal of another mode, as seen in Fig.~\ref{fig:onedexperiment}  (mid, right). 
-The purpose of the gating network, thus, is to enable the network to learn which blocks (or more specifically, which channels) to attend to for each object class. It increases the participation of the condition $({\bf y})$ in the generation process which in turn helps the network to effectively disentangle different object classes.
-%This experiment shows an encouraging result, suggesting that residual blocks decompose naturally into modeling parts of a distribution.
-
-
 
 \begin{figure}[t]%[ht!]
 \centering
@@ -211,6 +216,54 @@ The purpose of the gating network, thus, is to enable the network to learn which
     \label{fig:autocomplete_generate}
     %\vspace{-3mm}
 \end{figure}
+
+
+\begin{figure}[t]%[ht!]
+\centering
+\small
+\begin{tabular}{*{3}{c@{\hspace{3px}}}}
+    \frame{ \includegraphics[width=.30\linewidth]{images/ablation_shoes/partial_outline.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_edges.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_outlines.png}}
+    \\
+    Input & PE trained & PO trained \\
+    % %
+    % \begin{subfigure}[t]{.30\linewidth}\caption{Input}
+    % \label{fig:basketball_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.30\linewidth}\caption{PE trained} \label{fig:basketball_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.30\linewidth}\caption{PO trained} \label{fig:soccer_partial}\end{subfigure} \\
+    % %
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/autocompleted.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/pretrained_test_autocompleted.png}} &
+    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/test_autocompleted.png}} 
+    \\
+    Input & FE trained & FO trained \\
+    % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{Completion}} \label{fig:soccer_full}\end{subfigure} &
+    % \begin{subfigure}[t]{.30\linewidth}\caption{FE trained}\label{fig:cupcake_partial}\end{subfigure} &
+    % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{FO trained}} \label{fig:cupcake_full}\end{subfigure}\\
+\end{tabular} \\
+\normalsize
+\vspace{-2mm}
+    \caption{\textbf{Efficacy of outlines:} Networks trained on partial edges (PE) produce worse quality results than those trained on partial outlines (PO) when applied to real human input (top). Similarly, an appearance synthesis model trained on full edges (FE) does not work as well as a network trained on full outlines (FO) when given simplified sketches as input (bottom).}
+    \label{fig:ablation_partialedge_full_outline}
+\end{figure}
+
+
+\subsection{Insights on Gating Mechanism}
+We demonstrate the intuition behind this type of gating by a toy experiment in ~\figref{fig:onedexperiment} where a generative network models a one dimensional mixture of Gaussians, comprised of five components. 
+For this test, the generator and discriminator architectures consist of only residual blocks, where each residual block is composed of fully connected layers. 
+Additional details are in the supplementary material. 
+
+The generator is conditioned on a latent vector $z$, and is trained to approximate the distribution, as seen in Fig.~\ref{fig:onedexperiment} (left). 
+Removing a single residual block, in the spirit of~\cite{veit2016residual}, leads to the disappearance of a mode from the predicted distribution. 
+Removal of another block leads to further removal of another mode, as seen in Fig.~\ref{fig:onedexperiment}  (mid, right). 
+The purpose of the gating network, thus, is to enable the network to learn which blocks (or more specifically, which channels) to attend to for each object class. %It increases the participation of the condition $({\bf y})$ in the generation process which in turn helps the network to effectively disentangle different object classes.
+%This experiment shows an encouraging result, suggesting that residual blocks decompose naturally into modeling parts of a distribution.
+
+
+
+
+
 % \section{Method}
 % Interactive Image Generation can be thought of as a sequence of constraints given by the user and the subsequent addition of more constraints based on the geometry or texture constraints provided by the user. In such a constraint based setting a Generative Model has the freedom to choose how to generate a realistic real image honoring the constraints and allowing the freedom to generate as realistically as possible in the unconstrained areas. A system which can generate realistic final images starting from few strokes acting as constraints and honoring constraints at all times would be interactive provided we have fast enough feedforward processing through the network.
 
