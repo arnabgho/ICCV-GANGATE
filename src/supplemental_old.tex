@@ -1,7 +1,7 @@
 
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
-\usepackage{cvpr}
+\usepackage{iccv}
 \usepackage{times}
 \usepackage{epsfig}
 \usepackage{graphicx}
@@ -92,11 +92,11 @@
 
 % \cvprfinalcopy % *** Uncomment this line for the final submission
 
-\def\cvprPaperID{2914} % *** Enter the CVPR Paper ID here
+\def\iccvPaperID{4121} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
-\ifcvprfinal\pagestyle{empty}\fi
+\ificcvfinal\pagestyle{empty}\fi
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -759,15 +759,15 @@ completely on. We show all 24 blocks. This is an extension of Fig. 6 in the main
 \end{figure*}
 
 
-\begin{figure*}[h]
-    \centering
-    \includegraphics[width=1.\linewidth]{paper_images/multitask_comp.pdf}
-    \caption{\textbf{Multitask generation results}. A single network trained on both Cityscapes Label$\rightarrow$Image and Day$\rightarrow$Night. The proposed channelwise gating method (right) is able to better incorporate task conditioning and produces more realistic results.
-    % \ow{seems like this is missing 1. two generators, and 2. one generator. instead it seems more like an ablation study on our method, which is not the point. would be more impressive to show it matches 2 generators and 1 generator totally fails.}
-    }
-    \label{fig:multi-task_day2night}
-    \vspace{-2mm}
-\end{figure*}
+% \begin{figure*}[h]
+%     \centering
+%     \includegraphics[width=1.\linewidth]{paper_images/multitask_comp.pdf}
+%     \caption{\textbf{Multitask generation results}. A single network trained on both Cityscapes Label$\rightarrow$Image and Day$\rightarrow$Night. The proposed channelwise gating method (right) is able to better incorporate task conditioning and produces more realistic results.
+%     % \ow{seems like this is missing 1. two generators, and 2. one generator. instead it seems more like an ablation study on our method, which is not the point. would be more impressive to show it matches 2 generators and 1 generator totally fails.}
+%     }
+%     \label{fig:multi-task_day2night}
+%     \vspace{-2mm}
+% \end{figure*}
 
 % \input{src/supplemental.tex}
 
