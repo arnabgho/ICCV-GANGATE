@@ -45,7 +45,7 @@
         % OC $\rightarrow$ FO $\rightarrow$ Image \textbf{[Ours]} & \textbf{97.38\%}  \\
         Partial edges $\rightarrow$ Image & 73.12 \% \\
         Partial outline $\rightarrow$ Image & 88.74 \% \\
-        Partial edges $\rightarrow$ Full edges $\rightarrow$ Image & 45.96 \% \\
+        % Partial edges $\rightarrow$ Full edges $\rightarrow$ Image & 45.96 \% \\
         % \cdashline{1-2}
         Partial outline $\rightarrow$ Full outline $\rightarrow$ Image [Ours] & \textbf{97.38\%}  \\
         \bottomrule %inserts single line
@@ -56,13 +56,32 @@
 \end{table}
 
 
+% \begin{figure}[t]%[ht!]
+% \centering
+% \begin{tabular}{*{4}{c@{\hspace{3px}}}}
+%     \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/partial_outline.png}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/partial_outline_edge_complete.png}} &
+%     \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/full_outline.png}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/full_outline_edge_complete.png}}
+%     \\
+    
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
+% \end{tabular} \\
+%     \caption{\textbf{Partial Outlines $\rightarrow$ Edges} (Trained on edge completion). Blue frames represent inputs to the network. With sparse input, it produces incompatible completions and even if the full outline is provided it fails to produce decent texture strokes.}
+%     \label{fig:ablation_partial_edge_completion}
+%     \vspace{-3mm}
+% \end{figure}
+
 \begin{figure}[t]%[ht!]
 \centering
 \begin{tabular}{*{4}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/partial_outline.png}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/partial_outline_edge_complete.png}} &
-    \frame{\includegraphics[cfbox=blue 1pt 1pt,width=.22\linewidth]{images/outlines2edges/full_outline.png}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/outlines2edges/full_outline_edge_complete.png}}
+    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1.jpg}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge.jpg}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge_tone.jpg}} &
+    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_simplified_edge.jpg}}
     \\
     
     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
@@ -70,11 +89,44 @@
     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
 \end{tabular} \\
-    \caption{\textbf{Partial Outlines $\rightarrow$ Edges} (Trained on edge completion). Blue frames represent inputs to the network. With sparse input, it produces incompatible completions and even if the full outline is provided it fails to produce decent texture strokes.}
-    \label{fig:ablation_partial_edge_completion}
+    \caption{\textbf{Simplified Edges} The 2nd edgemap is obtained using the technique of \cite{isola2016image2image} while the 3rd is the intermediate edgemap using \cite{li2019im2pencil} and further simplified using \cite{simo2016learning} which looks closer to what a human would sketch. }
+    \label{fig:simplified_edges}
     \vspace{-3mm}
 \end{figure}
 
+
+\begin{figure}[t]%[ht!]
+\centering
+\resizebox{1.0\linewidth}{!}{
+\begin{tabular}{*{5}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_3.jpg}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_4.jpg}} & 
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_4.jpg}}&
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_5.jpg}} &
+    \\
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_3.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_4.png}} & 
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_4.png}}&
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_5.png}} &
+   
+    \\
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_3.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_4.png}} & 
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_4.png}}&
+    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_5.png}} &
+    
+    \\
+\end{tabular}
+}
+    \caption{\textbf{Sketch \& Fill results}.
+    A few input strokes in the first row are enough to automatically complete the class specific outlines and appearance. }
+    % \es{replace orange and chicken. maybe also moon and cupcake.}}
+    \label{fig:autocomplete_generate_sketches}
+    %\vspace{-3mm}
+\end{figure}
 
 \begin{figure}[t]%[ht!]
 \centering
@@ -102,7 +154,7 @@
     % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_partial}\end{subfigure} &
     % \begin{subfigure}[t]{.15\linewidth}\caption{}\label{fig:cupcake_full}\end{subfigure}\\
 \end{tabular}
-    \caption{\textbf{Direct Partial Outline $\rightarrow$ Image} Illustrating that when the outline is well defined the network can generate nice results but when the outline is sparse the network struggles with the geometry.}
+    \caption{\textbf{Direct Partial Outline $\rightarrow$ Image} Illustrating that when the outline is well defined, the network can generate realistic images but when the outline is sparse the network struggles with the geometry.}
     \label{fig:ablation_partial_full_outline}
     \vspace{-3mm}
 \end{figure}
@@ -161,38 +213,92 @@
 To explore the efficacy of our full pipeline, we introduce a new outline dataset, consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple. The images have all a white background and were collected using search keywords on popular search engines.
 % \es{where are images coming from?}
 In each image, we obtain rough outlines for the image. We find the largest blob in the image after thresholding it into a black and white image. We fill the interior holes of the largest blob and obtain a smooth outline using the Savitzky–Golay filter~\cite{savitzky1964smoothing}.
-% \ow{how?}
+We also conduct a series of experiments using pix2pix-like models to generate the final image directly from the edge map.
+\cameraready{
+\subsection{Single Class Generation}
+\paragraph{Datasets} We use the edges2shoes\cite{isola2016image2image}, CelebA-HQ\cite{karras2017progressive} and the Shapenet Cars \cite{chang2015shapenet} datasets to test our method on single class generation. 
+We simplify the edges to attempt to more closely resemble how humans would draw strokes by first using the preprocessing code of \cite{li2019im2pencil} further reducing the strokes with a sketch simplification network \cite{simo2016learning}.
+\paragraph{Architecture} We use the architecture described in \secref{sec:shape} for shape completion and adopt a state of the image to image translation network~\cite{wang2017high} for rendering. In this case, each dataset is a single class only, and so our gating approach is not needed here.}
+
+\cameraready{\paragraph{Results} As we can see the results in Figure \figref{fig:autocomplete_generate_sketches} our 2 step technique allows us to complete the simplified edge maps from the partial strokes and also generate realistic images from the autocompleted simplified edges.
+Table \ref{table:2step_eval_single_class} also shows on two datasets (Faces and Shoes), that using a 2 step procedure is better than going directly from the partial sketch to the completed image.}
+
+\begin{table}[t]
+\resizebox{1.\linewidth}{!} {
+    \centering
+        \begin{tabular}{l c}
+        % \hline
+        \toprule
+        \textbf{Trained task} & \textbf{FID} \\ \midrule
+        % PE $\rightarrow$ Image & 73.12 \% \\
+        % PO $\rightarrow$ Image & 88.74 \% \\
+        % EC $\rightarrow$ FE $\rightarrow$ Image & 45.96 \% \\
+        % OC $\rightarrow$ FO $\rightarrow$ Image \textbf{[Ours]} & \textbf{97.38\%}  \\
+        \textbf{Faces:}\\ \hline
+        Partial Simplified Edges $\rightarrow$ Image & 383.02 \\
+        Partial Simplified Edges $\rightarrow$ Simplified Edges $\rightarrow$ Image & 374.67 \\
+        \hline
+        \textbf{Shoes:}\\ \hline
+        Partial Simplified Edges $\rightarrow$ Image & 170.45 \\
+        Partial Simplified Edges $\rightarrow$ Simplified Edges $\rightarrow$ Image & 154.32 \\
+        % Partial edges $\rightarrow$ Full edges $\rightarrow$ Image & 45.96 \% \\
+        % \cdashline{1-2}
+        % Partial outline $\rightarrow$ Full outline $\rightarrow$ Image [Ours] & \textbf{97.38\%}  \\
+        \bottomrule %inserts single line
+        \end{tabular}
+        }
+    \caption{\label{table:2step_eval_single_class} \textbf{Shape + Appearance Generation Evaluation}. We evaluate the result quality from different task pipelines. Accuracy is computed by a fixed, pretrained classification network, on the resulting images.
+    % Evaluates the result quality from different trained task pipelines, including Partial Edges (PE), Partial Outlines (PO), Edge Completion (EC), Full Edges (FE), Outline Completion (OC), and Full Outlines (FO). Accuracy is computed by a fixed, pretrained classification network, on the resulting images.
+    }
+\end{table}
 
 
-\subsection{Shape Completion}
+\cameraready{ \subsection{Multi Class Generation} }
+\paragraph{Datasets} We used the 10-class dataset previously described in \secref{sec:experiments} to test the multi-class 2 stage approach proposed in the paper.
+\paragraph{Architecture} For the shape completion we use the architecture described in \secref{sec:shape} and for multi-class generations we use the gated architectures as mentioned in \secref{sec:appearance}.
 
-Unlike edge-to-image datasets used in previous~work~\cite{isola2016image2image,zhu2017unpaired,wang2017high}, our outlines are significantly sparser. 
-As we show in our experiments, this lets us provide the user with quicker feedback from fewer strokes. 
-However, one challenge of using a simplified dataset is that multiple object classes can have similar outlines (e.g., cookie, basketball, orange, moon).
-As such, properly integrating conditioning information is essential to be able to generate realistic images across multiple classes.
-%This represents better real-life image content that may share geometric properties and forces the sketch-to-image network to effectively integrate class information to be successful in this setting.
+\paragraph{Results}
+In order to test the fidelity of the automatically completed shapes evaluate the accuracy of a trained classifier on being able to correctly label a particular generation.
+We evaluate the results on the multi-class outline to image generations on two axes: adherence to conditioning and realism. We first test the conditioning adherence -- whether the network generates an image of the correct class.
+Off-the-shelf networks have been previously used to evaluate colorizations~\cite{zhang2016colorful}, street scenes~\cite{isola2016image2image, wang2017high}, and ImageNet generations~\cite{salimans2016improved}. 
+We take a similar approach and fine-tune a pretrained InceptionV3 network~\cite{szegedy2016rethinking} for our 10 classes. 
+The generations are then tested with this network for classification accuracy. Results are presented in Fig.~\ref{fig:acc_vs_real}.
 
-As mentioned in~\secref{sec:shape}, we simulate partial strokes in our dataset by removing random square patches and use BicycleGAN~\cite{zhu2017toward} model for training. We show some completion examples in \figref{fig:autocomplete_generate}.
-% \pd{Figure here}. 
+To judge the generation quality, we also perform a ``Visual Turing test" using Amazon Mechanical Turk (AMT). Turkers are shown a real image, followed by a generated image, or vice versa, and asked to identify the fake. An algorithm which generates a realistic image will ``fool" Turkers into choosing the incorrect image. We use the implementation from~\cite{zhang2016colorful}.
+Results are presented in Fig.~\ref{fig:acc_vs_real}, and qualitative examples are shown in Fig.~\ref{fig:alg_comp}.
 
-We evaluate outlines vs edges, and 1-step vs 2-step generation in Table \ref{table:2step_eval}. 
-% We use a data generation process on the test set to produce partial edges or outlines on the test set
-We use HED edge detector to compute edge maps, and the procedure described in \secref{sec:shape} to compute object outlines for the test set.
-We generate multiple occluded edge/outlines to simulate partial user strokes. We then translate, either from the input to image directly, or with a 2-step process. In order to ascertain the quality of generation we use an Inception~\cite{szegedy2016rethinking} network, finetuned on our multi-class dataset. Using off-the-shelf networks to judge the fidelity of results is often used in generation tasks, such as colorization~\cite{zhang2016colorful} and generative modeling~\cite{salimans2016improved}. We report the average classification accuracy over the classes for the generated results by the different techniques.
+% \subsection{Outline Completion and 2-Step Generation}
+
+% Unlike edge-to-image datasets used in previous~work~\cite{isola2016image2image,zhu2017unpaired,wang2017high}, we process outlines, which are significantly sparser. 
+% As we show in our experiments, this gives us a more intuitive interface, as the user can receive quicker feedback from fewer strokes. 
+% However, one challenge of using such a simplified dataset is that multiple object classes can have similar outlines (e.g., cookie, basketball, orange, moon).
+% As such, properly integrating conditioning information is essential to be able to generate realistic images across multiple classes.
+% %This represents better real-life image content that may share geometric properties and forces the sketch-to-image network to effectively integrate class information to be successful in this setting.
+
+% As mentioned in~\secref{sec:shape}, we simulate partial strokes in our dataset by removing random square patches and use the model mentioned in \figref{fig:SketchNet} to generate multi-modal outputs for the same incomplete sketch. We show some completion examples in \figref{fig:autocomplete_generate}.
+% % \pd{Figure here}. 
+
+% We evaluate the differences of performing outline completion, as compared to edge completion, and compare 1-step vs 2-step generation in Table \ref{table:2step_eval}. 
+% % We use a data generation process on the test set to produce partial edges or outlines on the test set
+% To do this, we compute edges using the HED edge detector, and generate multiple occluded edge/outlines to simulate partial user strokes. 
+% We then translate, either from the input to image directly (1-step), or with a 2-step process.
+% In order to ascertain the quality of generation we use an Inception~\cite{szegedy2016rethinking} network, finetuned on our multi-class dataset, and report the average classification accuracy over all classes for each variable set.
+% Using off-the-shelf networks to judge the fidelity of results is a common technique for generation tasks~\cite{zhang2016colorful,salimans2016improved}. 
+% We perform some additional qualitative experiments generalize our sparse edge concept beyond simple outlines.  We obtain the rough edges from the preprocessing code by \cite{li2019im2pencil} and further simplify the edges to obtain strokes which are more human-like using sketch simplification \cite{simo2016learning}.
+% This allows us to automatically complete more complex sketches such as shoes and faces as depicted in \figref{fig:autocomplete_generate_sketches}.
+% % \paragraph{Why outlines, not edges?} Edges offer the advantage of providing more information about the internal structure of the object. However, as shown in \figref{fig:ablation_partial_edge_completion} \&
+% % \figref{fig:ablation_partialedge_full_outline}, when the network is trained on partial edges (created using the same method as our partial outline dataset) and tested with just a few user strokes, the completion fails miserably. We suspect that this behaviour is due to the increased dependency of the network towards inputs with detailed internal structure. In Table~\ref{table:2step_eval}, for both the 1-step and 2-step pipelines, systems which use partial outlines generate more realistic results than with partial edges.
+
+% \paragraph{Why two-stage approach?} As mentioned, partial outline to image generation inherently requires solving two tasks, shape completion (shape generation) and texture filling (appearance generation). As demonstrated in \figref{fig:ablation_partial_full_outline}, in the multi-class dataset when the network is trained on partial outlines to full images, it struggles in generating the right geometry for the missing regions. As shown in Table \ref{table:2step_eval}, given partial inputs, we observe that our 2-step process, using outlines as input, produces generations which are classified more accurately.
 
 
-\paragraph{Why outlines, not edges?} Edges offer the advantage of providing more information about the internal structure of the object. However, as shown in \figref{fig:ablation_partial_edge_completion} \&
-\figref{fig:ablation_partialedge_full_outline}, when the network is trained on partial edges (created using the same method as our partial outline dataset) and tested with just a few user strokes, the completion fails miserably. We suspect that this behaviour is due to the increased dependency of the network towards inputs with detailed internal structure. In Table~\ref{table:2step_eval}, for both the 1-step and 2-step pipelines, systems which use partial outlines generate more realistic results than with partial edges.
 
-\paragraph{Why two-stage approach?} As mentioned, partial outline to image generation inherently requires solving two tasks, shape completion (shape generation) and texture filling (appearance generation). As demonstrated in \figref{fig:ablation_partial_full_outline}, in the multi-class dataset when the network is trained on partial outlines to full images, it struggles in generating the right geometry for the missing regions. As shown in Table \ref{table:2step_eval}, given partial inputs, we observe that our 2-step process, using outlines as input, produces generations which are classified more accurately.
-
-
-
-\subsection{Appearance Generation}
+%\subsection{Proposed Conditional Generation Architecture}
 %\paragraph{Architecture and Gating Comparisons}
+\paragraph{Analysis: Gating Architectures}
 We compare our proposed model to the residual \textbf{Encoder-Decoder} model~\cite{huang2018multimodal}.
 %In addition, we evaluate and analyze different gating variants and report the most effective one in the context of the outline-to-image generation task.
-In addition, we compare our proposed gating strategy and SkinnyResNet architecture to the following methods for  conditional image generation:
+In addition, we compare our proposed gating strategy and {\bf SkinnyResNet} architecture to the following methods for  conditional image generation:
 
 \begin{itemize}[noitemsep,leftmargin=12pt]
 \item{\bf Per-class}: a single generator for each category; this is the only test setting with \textit{multiple} networks, all others train a single network
@@ -214,10 +320,9 @@ X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath
 %\pd{Should we put the gating figure? Or refer to the supplementary?}
 % \figref{fig:alg_comp} shows the efficacy of Gating on the task outline to image generation. Naive conditioning techniques fail to properly condition the class. Gating allows the condition (class) to be an active part of the generation process which helps the network to easily distinguish different conditions. The Visual Turing Test in terms of Amazon Mechanical Turk's realism scores are shown in \figref{fig:acc_vs_real}.
 
-\vspace{2mm} \noindent \textbf{Evaluation Metrics} We evaluate the results on two axes: adherence to conditioning and realism. We first test the conditioning adherence -- whether the network generates an image of the correct class. Off-the-shelf networks have been previously used to evaluate colorizations~\cite{zhang2016colorful}, street scenes~\cite{isola2016image2image, wang2017high}, and ImageNet generations~\cite{salimans2016improved}. We take a similar approach and fine-tune a pretrained InceptionV3 network~\cite{szegedy2016rethinking} for our 10 classes. The generations are then tested with this network for classification accuracy.
+% \vspace{2mm} \noindent \textbf{Evaluation Metrics} We evaluate the results on two axes: adherence to conditioning and realism. We first test the conditioning adherence -- whether the network generates an image of the correct class. Off-the-shelf networks have been previously used to evaluate colorizations~\cite{zhang2016colorful}, street scenes~\cite{isola2016image2image, wang2017high}, and ImageNet generations~\cite{salimans2016improved}. We take a similar approach and fine-tune a pretrained InceptionV3 network~\cite{szegedy2016rethinking} for our 10 classes. The generations are then tested with this network for classification accuracy.
 % The class specific generations from the testset were passed through the finetuned network and the classifications were used to judge the class specific purity of the generations.
 
-To judge the generation quality, we perform a ``Visual Turing test" using Amazon Mechanical Turk (AMT). Turkers are shown a real image, followed by a generated image, or vice versa, and asked to identify the fake. An algorithm which generates a realistic image will ``fool" Turkers into choosing the incorrect image. We use the implementation from~\cite{zhang2016colorful}. We show quantitative results in Fig.~\ref{fig:acc_vs_real} and qualitative examples in Fig.~\ref{fig:alg_comp}.
 
 \vspace{2mm} \noindent \textbf{Does naive concatenation effectively inject conditioning?} In Fig.~\ref{fig:alg_comp}, we show a selected example from each of the 10 classes. The per-class baseline trivially adheres to the conditioning, as each class gets to have its own network. However, when a single network is trained to generate all classes, naive concatenation is unable to successfully inject class information, for either network and for either type of concatenation. For the \textbf{EncoderDecoder} network, basketballs, oranges, cupcakes, pineapples, and fried chicken are all confused with each other. For the \textbf{SkinnyResNet} network, oranges are generated instead of basketballs, and pineapples and fried chicken drumsticks are confused. As seen in Fig.~\ref{fig:acc_vs_real}, classification accuracy is slightly higher when concatenating all layers ($64.5\%$) versus only the input layer ($62.6\%$), but is low for both.
 % As evident from \figref{fig:alg_comp} for some classes naive concatenation helps in generating appealing images but for some classes it either fails to generate images from the right class or generates unrealistic images from that class.

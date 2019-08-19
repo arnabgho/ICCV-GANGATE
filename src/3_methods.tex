@@ -1,12 +1,12 @@
-\begin{figure}[t]
+
+\begin{figure*}[t]
     \centering
-    \includegraphics[width=\linewidth]{paper_images/isf_method_v3.pdf}
-    \caption{Training the model to generate realistic outlines from partial strokes using $G_S$ (Shape Generator) and generating real images from outlines using $G_A$ (Appearance Generator), alongside the discriminators for the respective domains of $D_S$ (Shape Discriminator) and $D_A$ (Appearance Discriminator).
-    }\label{fig:SketchFillNet}
+    % \includegraphics[width=\linewidth]{images/shape_completion/shape_completion.pdf}
+    \includegraphics[width=\linewidth]{paper_images/arch_shape.pdf}
+    \caption{\textbf{First stage: Shape Generator}: To achieve multi-modal completions $G_S$ design inspired from unconditional generator, with the conditioning provided at multiple scales to $G_S$ and $D_S$
+    }\label{fig:SketchNet}
     %\vspace{-2mm}
-\end{figure}
-
-
+\end{figure*}
 
 \label{sec:methods}
 
@@ -38,7 +38,7 @@
 % \end{itemize}
 
 \section{Method}
-We decouple the problem of interactive image generation into two stages: outline (or object shape) completion from sparse user sketches, and appearance synthesis from the completed outline. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape (outline) generation and the Appearance Generator $G_A$ for generating the final image as well as the adversary discriminators $D_S$ and $D_A$. The method can be seen effective in the user interface in \figref{fig:gui}.
+We decouple the problem of interactive image generation into two stages: object shape completion from sparse user sketches, and appearance synthesis from the completed shape. More specifically as illustrated in \figref{fig:SketchFillNet} we use the Shape Generator $G_S$ for the automatic shape (outline/sparse sketch) generation and the Appearance Generator $G_A$ for generating the final image as well as the adversary discriminators $D_S$ and $D_A$. The method can be seen effective in the user interface in \figref{fig:gui}.
 %To ensure that the generated shape completions and appearance completions are accurate for their respective domains we use the Shape Discriminator $D_S$ and the Appearance Discriminator $D_A$.
 % \es{we need to refer to Fig.~\ref{fig:SketchFillNet} and use it's terminology $G_S$, $G_A$, ...}
 %A naive method of bypassing this two step process and generating the final image from the partial strokes yielded sub-par results demonstrated in Section \ref{sec:experiments} hence necessitating the 2 step process. 
@@ -48,17 +48,14 @@ We decouple the problem of interactive image generation into two stages: outline
 \label{sec:shape}
 The shape completion network $G_S$ should provide the user with a visualization of its  completed shape, based on user input, and should keep on updating the suggested shape interactively. 
 %For an interactive user interface to be effective, the network has to generate an estimated full image shape as the user adds sparse input. 
-We take a data-driven approach for this whereby, to train the network, we simulate partial strokes by removing random square patches from the full outline image. 
+We take a data-driven approach for this whereby, to train the network, we simulate partial strokes by removing random square patches from the full outline/ full sparse sketch image. 
 The patches are of three sizes (64$\times$64, 128$\times$128, 192$\times$192) and are placed at a random location in the image (of size 256$\times$256). An illustration can be seen in \figref{fig:autocomplete_data_generation}.
 % \es{probably need more details here - size of squares, how many per image, total training data size etc.}
-We automatically generate data in this manner creating a dataset where 75 different partial outlines are created from a single outline image.
-We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the shape completion task, and we train it, unmodified, on pairs of partial-full outline images. %(Fig.~\ref{fig:infogan_gate}, top left).
+We automatically generate data in this manner creating a dataset where 75 different partial outlines/sketches are created from a single outline/sketch image.
+%We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the shape completion task, and we train it, unmodified, on pairs of partial-full outline images. %(Fig.~\ref{fig:infogan_gate}, top left).
+The model used to generate multimodal completions of the input sketch is depicted in \figref{fig:SketchNet} based on the architecture used for non-image conditional generations in \cite{mescheder2018training}. We modify the architecture such that the conditioning input scribble is provided to the generator and discriminator at multiple scales. 
 
-\begin{figure}[t!]
-	\centering
-	\animategraphics[autoplay,loop,width=\linewidth]{25}{images/gif/}{00001}{00266} 
-	\caption{Our interface. \textbf{Please view with Acrobat Reader.}} \label{fig:gui}
-\end{figure}
+
 
 \begin{figure}[t]
 \centering
@@ -68,24 +65,40 @@ We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the sh
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/128.png}} &
     \frame{\includegraphics[width=.22\linewidth]{images/autocomplete_data_generation/192.png}}\\
     Outline &
-    64x64&
-    128x128 &
-    192x192\\
+    64$\times$64&
+    128$\times$128 &
+    192$\times$192\\
 \end{tabular} \\
-    \caption{\textbf{Autocomplete Training Data Creation:} 3 sizes (64$\times$64,128$\times$128,192$\times$192) of white colored occluders were used for simulating partial edges.}
+    \caption{\textbf{Autocomplete Simulated Inputs:} 3 sizes (64$\times$64,128$\times$128,192$\times$192) of white colored occluders were used for simulating partial edges.}
     \label{fig:autocomplete_data_generation}
 \end{figure}
 
 \begin{figure*}[t]
     \centering
-    % \includegraphics[width=\linewidth]{paper_images/arch_gate.pdf}
-    \includegraphics[width=1.\linewidth]{paper_images/arch_gate2.pdf}
+    \includegraphics[width=1.\linewidth]{paper_images/arch_inject2.pdf}
     \caption{
-    % {\bf Incorporating soft-gating into residual blocks.} \rz{Order got changed, may or may not need to add key for hadamard product}
-    {\bf (Top-left)} A ``vanilla" residual block without gated conditioning parameters modifies input tensor $X$ into $X+\mathcal{H}(X)$. Conditioning with concatenation uses this setup. {\bf (Top-mid)} The $\mathcal{H}(X)$ block is softly-gated by scalar parameter $\alpha$ and shift $\beta$. {\bf (Top-right)} Only the gating is used, without bias. {\bf (Bot-left)} Adaptive Instance Normalization~\cite{huang2017arbitrary} applies a channel-wise scaling and shifting after an instance normalization layer. {\bf (Bot-mid)} Channel-wise gating adds restrictions to the range of $\mbox{\boldmath $\alpha$}$. {\bf (Bot-right)} We find that channel-wise gating (without added bias) to empirically produce the best results.\label{fig:arch-gate}
+    \vspace{-2mm}
+    {\bf Conditioning variants for the Appearance Generator} \label{fig:arch-gate}
     \vspace{-2mm}
     }
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    % \includegraphics[width=\linewidth]{paper_images/arch_gate.pdf}
+    % \includegraphics[width=.9\linewidth]{paper_images/arch_gate2.pdf}
+    % \caption{
+    % % {\bf Incorporating soft-gating into residual blocks.} \rz{Order got changed, may or may not need to add key for hadamard product}
+    % {\bf (Top-left)} A ``vanilla" residual block without conditioning modifies input tensor $X$ into $X+\mathcal{H}(X)$. Conditioning with concatenation uses this setup. {\bf (Top-mid)} The $\mathcal{H}(X)$ block is softly-gated by scalar parameter $\alpha$ and shift $\beta$. {\bf (Top-right)} Only the gating is used, without bias. {\bf (Bot-left)} Adaptive Instance Normalization~\cite{huang2017arbitrary} applies a channel-wise scaling and shifting after an instance normalization layer. {\bf (Bot-mid)} Channel-wise gating adds restrictions to the range of $\mbox{\boldmath $\alpha$}$. {\bf (Bot-right)} We find empirically, that channel-wise gating (without added bias) produced the best results.\label{fig:arch-gate}
+    % \vspace{-2mm}
+    % }
     % \vspace{-4mm}
+    \includegraphics[width=1.\linewidth]{paper_images/arch_gate3.pdf}
+    \caption{
+    % {\bf Incorporating soft-gating into residual blocks.} \rz{Order got changed, may or may not need to add key for hadamard product}
+    {\bf Injecting conditioning with modified residual layers} {\bf (Left)} A ``vanilla" residual block without conditioning applies a residual modification to the input tensor. {\bf (Mid-left)} The $\mathcal{H}(X)$ block is softly-gated by scalar parameter $\alpha$ and shift $\beta$. {\bf (Mid)} Adaptive Instance Normalization~\cite{huang2017arbitrary} applies a channel-wise scaling and shifting after an instance normalization layer. {\bf (Mid-right)} Channel-wise gating adds restrictions to the range of $\mbox{\boldmath $\alpha$}$. {\bf (Right)} We find empirically, that channel-wise gating (without added bias) produced the best results.\label{fig:arch-gate}
+    \vspace{-2mm}
+    }
 \end{figure*}
 
 
@@ -100,9 +113,10 @@ We found that the BicycleGAN model~\cite{zhu2017toward} performed well on the sh
 \end{figure*}
 
 \subsection{Appearance synthesis}
+\label{sec:appearance}
 %We use a conditional GAN formulation for generating images from outlines as shown by the efficacy in \cite{isola2016image2image,zhu2017toward}. 
 An ideal interactive sketch-to-image system  should be able to generate multiple different image classes with a single generator. 
-Beside memory and time considerations (avoiding loading/using a separate model per class, reduce overall memory), a single network can share features related to outline recognition and texture generation that are common across classes, which helps training with limited examples per class. %\es{Didn't we already said that in the intro? If yes we should remove/significantly shorten}
+Beside memory and time considerations (avoiding loading/using a separate model per class, reducing overall memory), a single network can share features related to outline recognition and texture generation that are common across classes, which helps training with limited examples per class. %\es{Didn't we already said that in the intro? If yes we should remove/significantly shorten}
 
 As we later show, existing class conditioning-by-concatenation techniques fail to properly condition the network about the class information in current image translation networks~\cite{isola2016image2image,zhu2017toward}.
 %
@@ -123,12 +137,13 @@ Changes in resolution are obtained by upsampling before or downsampling after th
 %We investigate multiple variants of the \textit{learned} gating network.
 % , as illustrated in Fig.~\ref{fig:arch-gate}.
 % For visual clarity, we omit the layer subscript $l$ in feature tensor $X_l$, residual subnetwork $\mathcal{H}_l$, and the gating parameters $\alpha_l, \beta_l$.
+Note that we're omitting "l" subscript for clarity.
 Our gating network augments this with a predicted scalar $\alpha$ for each layer of the network using a learned network $\mathcal{F}({\bf y})$, where  ${\bf y}$ is the conditioning vector:
 \begin{equation}
 X + \alpha \; \mathcal{H}(X), \text{where } \alpha \in [0,1]
 \end{equation}
 
-If the conditioning vector ${\bf y}$ has no use for a particular block, it can predict $\alpha$ close to zero, and effectively switch off the layer.
+If the conditioning vector ${\bf y}$ has no use for a particular block, it can predict $\alpha$ close to zero and effectively switch off the layer.
 % , and use that layer instead for other classes.
 During training, blocks within the main network can transform the image in various ways, and $\mathcal{F}$ can modulate such that the most useful blocks are selected. 
 Unlike previous feature map conditioning methods such as AdaIn~\cite{ulyanovinstance}, we apply gating to \emph{both} the generator and discriminator. 
@@ -153,8 +168,8 @@ We additionally explored incorporating a bias term after the soft-gating, either
 
 Finally, we describe our network architecture. 
 We base our architecture on the proposed residual \textbf{Encoder-Decoder} model from MUNIT~\cite{huang2018multimodal}.
-This architecture, is comprised of 3 \texttt{conv} layers, 8 residual blocks, and 3 \texttt{up-conv} layers. The residual blocks have 256 channels. 
-First, we deepen the network, based on the principle that deeper networks have more valid disjoint, partially shared, paths~\cite{veit2016residual}, and add 24 residual blocks. 
+This architecture is comprised of 3 \texttt{conv} layers, 8 residual blocks, and 3 \texttt{up-conv} layers. The residual blocks have 256 channels. 
+First, we deepen the network, based on the principle that deeper networks have more valid disjoint, partially shared paths~\cite{veit2016residual}, and add 24 residual blocks. 
 To enable the larger number of residual blocks, we drastically reduce the width to 32 channels for every layer. 
 We refer to this network as \textbf{SkinnyResNet}. 
 Additionally, we found that modifying the downsampling and upsampling blocks to be residual connections as well improved results, and also enables us to apply gating to {\em all} blocks. 
@@ -218,46 +233,48 @@ is also designed using residual blocks. Additional architecture details are in t
 \end{figure}
 
 
-\begin{figure}[t]%[ht!]
-\centering
-\small
-\begin{tabular}{*{3}{c@{\hspace{3px}}}}
-    \frame{ \includegraphics[width=.30\linewidth]{images/ablation_shoes/partial_outline.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_edges.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_outlines.png}}
-    \\
-    Input & PE trained & PO trained \\
-    % %
-    % \begin{subfigure}[t]{.30\linewidth}\caption{Input}
-    % \label{fig:basketball_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.30\linewidth}\caption{PE trained} \label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.30\linewidth}\caption{PO trained} \label{fig:soccer_partial}\end{subfigure} \\
-    % %
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/autocompleted.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/pretrained_test_autocompleted.png}} &
-    \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/test_autocompleted.png}} 
-    \\
-    Input & FE trained & FO trained \\
-    % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{Completion}} \label{fig:soccer_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.30\linewidth}\caption{FE trained}\label{fig:cupcake_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{FO trained}} \label{fig:cupcake_full}\end{subfigure}\\
-\end{tabular} \\
-\normalsize
-\vspace{-2mm}
-    \caption{\textbf{Efficacy of outlines:} Networks trained on partial edges (PE) produce worse quality results than those trained on partial outlines (PO) when applied to real human input (top). Similarly, an appearance synthesis model trained on full edges (FE) does not work as well as a network trained on full outlines (FO) when given simplified sketches as input (bottom).}
-    \label{fig:ablation_partialedge_full_outline}
-\end{figure}
+
+
+% \begin{figure}[t]%[ht!]
+% \centering
+% \small
+% \begin{tabular}{*{3}{c@{\hspace{3px}}}}
+%     \frame{ \includegraphics[width=.30\linewidth]{images/ablation_shoes/partial_outline.png}} &
+%     \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_edges.png}} &
+%     \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/trained_partial_outlines.png}}
+%     \\
+%     Input & PE trained & PO trained \\
+%     % %
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{Input}
+%     % \label{fig:basketball_partial}\end{subfigure} &
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{PE trained} \label{fig:basketball_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{PO trained} \label{fig:soccer_partial}\end{subfigure} \\
+%     % %
+%     \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/autocompleted.png}} &
+%     \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/pretrained_test_autocompleted.png}} &
+%     \frame{\includegraphics[width=.30\linewidth]{images/ablation_shoes/test_autocompleted.png}} 
+%     \\
+%     Input & FE trained & FO trained \\
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{Completion}} \label{fig:soccer_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{FE trained}\label{fig:cupcake_partial}\end{subfigure} &
+%     % \begin{subfigure}[t]{.30\linewidth}\caption{\textbf{FO trained}} \label{fig:cupcake_full}\end{subfigure}\\
+% \end{tabular} \\
+% \normalsize
+% \vspace{-2mm}
+%     \caption{\textbf{Efficacy of outlines:} Networks trained on partial edges (PE) produce worse quality results than those trained on partial outlines (PO) when applied to real human input (top). Similarly, an appearance synthesis model trained on full edges (FE) does not work as well as a network trained on full outlines (FO) when given simplified sketches as input (bottom).}
+%     \label{fig:ablation_partialedge_full_outline}
+% \end{figure}
 
 
 \subsection{Insights on Gating Mechanism}
-We demonstrate the intuition behind this type of gating by a toy experiment in ~\figref{fig:onedexperiment} where a generative network models a one dimensional mixture of Gaussians, comprised of five components. 
+We demonstrate the intuition behind this type of gating by a toy experiment in ~\figref{fig:onedexperiment}, where a generative network models a 1D mixture of Gaussians, comprised of five components. 
 For this test, the generator and discriminator architectures consist of only residual blocks, where each residual block is composed of fully connected layers. 
 Additional details are in the supplementary material. 
-
-The generator is conditioned on a latent vector $z$, and is trained to approximate the distribution, as seen in Fig.~\ref{fig:onedexperiment} (left). 
+%
+The generator is conditioned on a latent vector $z$ and is trained to approximate the distribution, as seen in Fig.~\ref{fig:onedexperiment} (left). 
 Removing a single residual block, in the spirit of~\cite{veit2016residual}, leads to the disappearance of a mode from the predicted distribution. 
 Removal of another block leads to further removal of another mode, as seen in Fig.~\ref{fig:onedexperiment}  (mid, right). 
-The purpose of the gating network, thus, is to enable the network to learn which blocks (or more specifically, which channels) to attend to for each object class. %It increases the participation of the condition $({\bf y})$ in the generation process which in turn helps the network to effectively disentangle different object classes.
+This motivates the gating network, which enables the network to learn which blocks (or more specifically, which channels) to attend to for each object class. %It increases the participation of the condition $({\bf y})$ in the generation process which in turn helps the network to effectively disentangle different object classes.
 %This experiment shows an encouraging result, suggesting that residual blocks decompose naturally into modeling parts of a distribution.
 
 

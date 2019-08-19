@@ -10,9 +10,24 @@
 %     % \vspace{-4mm}
 % \end{figure*}
 
+
+\begin{figure*}[t]
+    \centering  
+    \begin{tabular}{cc}
+    \includegraphics[width=.45\linewidth]{paper_images/isf_method_v3.pdf} &
+    \animategraphics[autoplay,loop,width=.45\linewidth]{25}{images/gif/}{00001}{00266}
+    \\
+    (a) & (b) \\
+    \end{tabular}
+        \caption{{\bf Our two-stage approach (a)} First, we complete a sketch, using the shape generator $G_S$. The appearance generator $G_A$ then translates the result into an image. Both generators are trained with respective discriminators $D_S$, $D_A$.
+        {\textbf{Video of our interface (b).} Please view with Acrobat Reader.}}\label{fig:SketchFillNet}
+        %\label{fig:gui}}
+\end{figure*}
+
+
 \section{Related Work}
 
-\paragraph{Interactive Generation} Interactive interfaces for freehand drawing go all the way back to Ivan Sutherland's Sketchpad~\cite{sutherland64}.  The pre-deep work most related to us, ShadowDraw~\cite{lee2011shadowdraw} introduced the concept of generating multiple shadows for novice users to be able to draw sketches. PhotoSketcher \cite{eitz2011photosketcher} introduces a retrieval based method for obtaining real images from sketches. %Hays et al.~\cite{hays2007scene} introduce a retrieval-based method for filling scenes.
+\paragraph{Interactive Generation} Interactive interfaces for freehand drawing go all the way back to Ivan Sutherland's Sketchpad~\cite{sutherland64}.  The pre-deep work most related to us, ShadowDraw~\cite{lee2011shadowdraw}, introduced the concept of generating multiple shadows for novice users to be able to draw sketches. PhotoSketcher \cite{eitz2011photosketcher} introduces a retrieval based method for obtaining real images from sketches. %Hays et al.~\cite{hays2007scene} introduce a retrieval-based method for filling scenes.
 % \es{other old papers? Talk about ShadowDraw and other non-deep methods}. 
 More recently, deep recurrent networks have been used to generate sketches~\cite{ha2017neural,ganin2018synthesizing}. Sketch-RNN~\cite{ha2017neural} provides a completion of partial strokes, with the advantage of intermediate stroke information via the Quickdraw dataset at training time. SPIRAL \cite{ganin2018synthesizing} learns to generate digits and faces using a reinforcement learning approach.
 % to generate programs for synthesizing the final image.
@@ -41,11 +56,11 @@ One modeling approach is to add a predictor from the output to the conditioner, 
 
 \vspace{2mm} \noindent \textbf{Gating Mechanisms}
 %Residual Networks \cite{he2016deep} introduced a new set of architectures that enabled training of very deep networks.
-Residual networks~\cite{he2016deep}, first introduced for image classification~\cite{krizhevsky2012imagenet}, have made extremely deep networks viable to train. Veit et al.~\cite{veit2016residual} find that the skip connection in the architecture enables test-time removal of blocks. Follow-up work~\cite{veit2018adaptive} builds in block removal during training time, with the goal of subsets of blocks specializing to different categories. Inspired by these results, we propose the use of gating for image generation, and provide a systematic analysis of gating mechanisms.
+Residual networks~\cite{he2016deep}, first introduced for image classification~\cite{krizhevsky2012imagenet}, have made extremely deep networks viable to train. Veit et al.~\cite{veit2016residual} find that the skip connection in the architecture enables test-time removal of blocks. Follow-up work~\cite{veit2018adaptive} builds in block removal during training time, with the goal of subsets of blocks specializing to different categories. Inspired by these results, we propose the use of gating for image generation and provide a systematic analysis of gating mechanisms.
 % Prior work has demonstrated that in ResNets, some paths are more important for particular classes~\cite{veit2016residual}, and has used this to develop a hard gating mechanism~\cite{veit2018adaptive}.
 % We provide a further analysis of gating mechanisms, in the context of GAN image generation, as opposed to image classification.
 
-The adaptive instance normalization (AdaIn) layer has similarly been used in arbitrary style transfer~\cite{huang2017arbitrary} and image-to-image translation~\cite{huang2018multimodal}, and Feature-wise Linear Modulation (FiLM)~\cite{perez2017film}. Both methods scale and shift feature distributions, based on a high-dimensional conditioner, such as an image or natural language question. Gating also plays an important role in sequential models for natural language processing: LSTMs \cite{hochreiter1997long} and GRU \cite{cho2014learning}. There has been concurrent work in \cite{karras2018style}, \cite{park2019semantic} whereby they use a AdaIN style network to modulate the generator parameters.
+The adaptive instance normalization (AdaIn) layer has similarly been used in arbitrary style transfer~\cite{huang2017arbitrary} and image-to-image translation~\cite{huang2018multimodal}, and Feature-wise Linear Modulation (FiLM)~\cite{perez2017film}. Both methods scale and shift feature distributions, based on a high-dimensional conditioner, such as an image or natural language question. Gating also plays an important role in sequential models for natural language processing: LSTMs \cite{hochreiter1997long} and GRU \cite{cho2014learning}. Similarly, concurrent work \cite{karras2018style}, \cite{park2019semantic} use a AdaIN-style network to modulate the generator parameters.
 % \es{Mention concurrent work? StyleGAN, Taesung's paper}
 
 % Our approach is related to adaptive instance normalization (AdaIn) has been used to great success in style transfer~\cite{huang2017arbitrary} and multimodal image-to-image translation~\cite{huang2018multimodal}.
