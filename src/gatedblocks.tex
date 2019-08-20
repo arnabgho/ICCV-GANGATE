@@ -44,7 +44,7 @@
 % If you comment hyperref and then uncomment it, you should delete
 % egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
 % run, let it finish, and you should be clear).
-\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+% \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
 
 \DeclareMathOperator{\E}{\mathbb{E}}
 \DeclareMathOperator{\R}{\mathbb{R}}
@@ -202,8 +202,8 @@ $^{1}$University of Oxford \hspace{15mm} $^{2}$Adobe Research \hspace{15mm} $^{3
     % \vspace{-20mm}
     \includegraphics[width=1.\linewidth]{paper_images/teaser_v7.pdf}
     
-    \captionof{figure}{({\bf Top}) Given sparse user input (first row), our model estimates the complete shape and provides this as a recommendation to the user (shown in gray), along with the final synthesized object (second row). These estimates are updated as the user adds strokes over time (shown in \textcolor{green}{green}), or removes strokes (shown in \textcolor{red}{red}) -- previous edits are shown in black.
-    ({\bf Bottom}) This generation is class conditioned, and our method is able to generate distinct multiple objects for the same outline (\eg `circle'), by conditioning the generator on the object category.\label{fig:teaser}
+    \captionof{figure}{({\bf Top}) Given sparse user input (first row), our model estimates the complete shape and provides this as a recommendation to the user (shown in gray), along with the final synthesized object (second row). These estimates are updated as the user adds (\textcolor{green}{green}) or removes strokes (\textcolor{red}{red}) over time -- previous edits are shown in black.
+    ({\bf Bottom}) This generation is class-conditioned, and our method is able to generate distinct multiple objects for the same outline (\eg `circle') by conditioning the generator on the object category.\label{fig:teaser}
     }
     \vspace{1em}
 \end{center}%
@@ -223,7 +223,7 @@ $^{1}$University of Oxford \hspace{15mm} $^{2}$Adobe Research \hspace{15mm} $^{3
 \input{src/4_experiments.tex}
 
 \input{src/5_discussion.tex}
-
+\vspace{-4mm}
 \section*{Acknowledgements}
 \noindent AG, PKD, and PHST are supported by the ERC grant ERC-2012-AdG, EPSRC grant Seebibyte EP/M013774/1, EPSRC/MURI grant EP/N019474/1 and would also like to acknowledge the Royal Academy of Engineering and FiveAI. Part of the work was done while AG was an intern at Adobe.
 
