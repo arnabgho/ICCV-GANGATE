@@ -12,8 +12,11 @@ We propose a new GAN-based interactive image generation system for drawing objec
 %In that context, our system learns mapping from the domain of easy-to-give user input (e.g., sparse strokes), to realistic images, while giving feedbacks to the user.
 %In this feedback loop, the user takes inspiration from the \emph{and} the learned model each condition their next steps based on the previous output of the other. 
 
-We use sparse object outlines/sparse sketches instead of dense edge maps as the user input, as these are closer to lines that novice users tend to draw~\cite{cole2008people}. 
-Our model first completes the partial outline/sketch and then generates the image conditioned on the completed shape. There are several advantages to this two-stage approach.
+
+
+We use sparse object outlines/sketches/simplified-edges instead of dense edge maps as the user input
+\footnote{Our input is always a partial sketch/outline image or partial simplified-edge map. These terms are sometimes used interchangeably. One can think of partial sketch/outline as a sparsified form of simplified-edge map, which again can be thought of as a sparsified form of an edge map.}, as these are closer to the lines that novice users tend to draw~\cite{cole2008people}. 
+Our model first completes the input, could be partial outline or partial simplified-edge, and then generates the image conditioned on the completed shape. There are several advantages to this two-stage approach.
 For one, we are able to give the artist feedback on the general object shape in our interactive interface (similar to ShadowDraw~\cite{lee2011shadowdraw}), allowing them to quickly refine the completed shape until it is satisfactory.
 Second, we found this to work better than going directly from partial outlines to images, as the additional intermediate supervision on full outlines/sketches breaks the problem into two easier sub-problems -- first recover the geometric properties of the object (shape, proportions) and then fill in the appearance (colors, textures). 
 
@@ -22,7 +25,10 @@ Second, we found this to work better than going directly from partial outlines t
 
 For the second stage, multi-class conditional generation, we use a gating mechanism conditioned on the input class label. Briefly, gating allows the network to focus on the important parts (activations) of the network specific to the conditioning class. Such an approach allows for a clean separation of classes, enabling us to train a single generator and discriminator across \emph{multiple} object classes. %based on this gating conditioning.
 
-To demonstrate the potential of our method as an interactive tool for stroke-based image generation, we collect a new image dataset of ten object classes. We focus on simple objects on white backgrounds, although we believe our method is general and can be applied to other image types and other types of sparse strokes. In order to stress test our gating mechanism, six  of the object classes have similar round outlines, so the model is truly conditioned on the class label and cannot figure out the class only from the strokes. \figref{fig:gui} shows a short video of an interactive editing session using our system.
+To demonstrate the potential of our method as an interactive tool for stroke-based image generation, we collect a new image dataset of ten simple object classes (pineapple, soccer, basketball, etc.) with white background. In order to stress test our gating mechanism, six  of the object classes have similar round outlines, so the model is truly conditioned on the class label and cannot figure out the class only from the strokes. \figref{fig:gui} shows a short video of an interactive editing session using our system. Along with these simple objects, we also demonstrate the potential of our method on complicated ones such as `faces' and `shoes'. 
+
+
+
 
 % In addition, to demonstrate the effectiveness of the gating mechanism, we also show that it helps in learning multi-modal distribution for image to image translation, which otherwise requires additional sophisticated modifications~\cite{zhu2017toward,ghosh2017multi}.
 

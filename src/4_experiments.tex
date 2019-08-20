@@ -75,58 +75,152 @@
 %     \vspace{-3mm}
 % \end{figure}
 
-\begin{figure}[t]%[ht!]
-\centering
-\begin{tabular}{*{4}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1.jpg}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge.jpg}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge_tone.jpg}} &
-    \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_simplified_edge.jpg}}
-    \\
+% \begin{figure}[t]%[ht!]
+% \centering
+% \begin{tabular}{*{4}{c@{\hspace{3px}}}}
+%     \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1.jpg}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge.jpg}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_edge_tone.jpg}} &
+%     \frame{\includegraphics[width=.22\linewidth]{images/edge_simplification/1_simplified_edge.jpg}}
+%     \\
     
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
-    % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
-\end{tabular} \\
-    \caption{\textbf{Simplified Edges} The 2nd edgemap is obtained using the technique of \cite{isola2016image2image} while the 3rd is the intermediate edgemap using \cite{li2019im2pencil} and further simplified using \cite{simo2016learning} which looks closer to what a human would sketch. }
-    \label{fig:simplified_edges}
-    \vspace{-3mm}
-\end{figure}
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_partial}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:basketball_full}\end{subfigure} &
+%     % \begin{subfigure}[t]{.25\linewidth}\caption{}\label{fig:soccer_partial}\end{subfigure} \\
+% \end{tabular} \\
+%     \caption{\textbf{Simplified Edges} The 2nd edgemap is obtained using the technique of \cite{isola2016image2image} while the 3rd is the intermediate edgemap using \cite{li2019im2pencil} and further simplified using \cite{simo2016learning} which looks closer to what a human would sketch. }
+%     \label{fig:simplified_edges}
+%     \vspace{-3mm}
+% \end{figure}
 
 
-\begin{figure}[t]%[ht!]
-\centering
-\resizebox{1.0\linewidth}{!}{
+% \begin{figure}[t]%[ht!]
+% \centering
+% \resizebox{1.0\linewidth}{!}{
+% \begin{tabular}{*{5}{c@{\hspace{3px}}}}
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_5.jpg}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_6.jpg}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_7.jpg}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_8.jpg}} &
+%     \\
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_5.png}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_6.png}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_7.png}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_8.png}} &
+   
+%     \\
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_5.png}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_6.png}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_7.png}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_8.png}} &
+    
+%     \\
+% \end{tabular}
+% }
+%     \caption{\textbf{Sketch \& Fill Progression: Shoes}
+%     As the sparse strokes are changed by the user the shape and the generated image evolves too. }
+%     % \es{replace orange and chicken. maybe also moon and cupcake.}}
+%     \label{fig:autocomplete_generate_sketches_shoes}
+%     %\vspace{-3mm}
+% \end{figure}
+
+
+
+% \begin{figure}[t]%[ht!]
+% \centering
+% \resizebox{1.0\linewidth}{!}{
+% \begin{tabular}{*{5}{c@{\hspace{3px}}}}
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_6.jpg}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_7.jpg}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_8.jpg}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_9.jpg}} &
+%     \\
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_6.png}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_7.png}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_8.png}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_9.png}} &
+   
+%     \\
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_6.png}} &
+%     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_7.png}} & 
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_8.png}}&
+%     \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_9.png}} &
+    
+%     \\
+% \end{tabular}
+% }
+%     \caption{\textbf{Sketch \& Fill Progression: Faces}
+%     As the sparse strokes are changed by the user the shape and the generated image evolves too. }
+%     % \es{replace orange and chicken. maybe also moon and cupcake.}}
+%     \label{fig:autocomplete_generate_sketches_faces}
+%     %\vspace{-3mm}
+% \end{figure}
+\begin{figure*}[t]
+\begin{tabular}{cc}
+      \resizebox{0.5\linewidth}{!}{
 \begin{tabular}{*{5}{c@{\hspace{3px}}}}
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_3.jpg}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/current_scribble_5.jpg}} &
     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/current_scribble_4.jpg}} & 
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_4.jpg}}&
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/current_scribble_5.jpg}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/current_scribble_6.jpg}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/current_scribble_7.jpg}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/current_scribble_8.jpg}} &
     \\
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_3.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_5.png}} &
     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_4.png}} & 
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_4.png}}&
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/autocompleted_sketch_5.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_6.png}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_7.png}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/autocompleted_sketch_8.png}} &
    
     \\
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_3.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/rendered_5.png}} &
     %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
-    \frame{\includegraphics[width=.25\linewidth]{images/shoe_autocomplete_render/rendered_4.png}} & 
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_4.png}}&
-    \frame{\includegraphics[width=.25\linewidth]{images/face_autocomplete_render/rendered_5.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/rendered_6.png}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/rendered_7.png}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/shoe_autocomplete_render/rendered_8.png}} &
     
     \\
 \end{tabular}
-}
-    \caption{\textbf{Sketch \& Fill results}.
-    A few input strokes in the first row are enough to automatically complete the class specific outlines and appearance. }
+    }
+     & 
+    \resizebox{0.5\linewidth}{!}{
+\begin{tabular}{*{5}{c@{\hspace{3px}}}}
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/current_scribble_6.jpg}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/current_scribble_7.jpg}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/current_scribble_8.jpg}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/current_scribble_9.jpg}} &
+    \\
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/autocompleted_sketch_6.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/autocompleted_sketch_7.png}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/autocompleted_sketch_8.png}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/autocompleted_sketch_9.png}} &
+   
+    \\
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/rendered_6.png}} &
+    %\frame{\includegraphics[width=.10\linewidth]{images/autocomplete_generate/scribble/soccer.png}} &
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/rendered_7.png}} & 
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/rendered_8.png}}&
+    \frame{\includegraphics[width=.125\linewidth]{images/face_autocomplete_render/rendered_9.png}} &
+    
+    \\
+\end{tabular}
+} 
+     
+\end{tabular}
+    \caption{\textbf{Sketch \& Fill Progression:}
+    As the sparse strokes are changed by the user the shape and the generated image evolves too. Note that changing a stroke locally produces coherent changes in other parts of the image.}
     % \es{replace orange and chicken. maybe also moon and cupcake.}}
     \label{fig:autocomplete_generate_sketches}
-    %\vspace{-3mm}
-\end{figure}
+\end{figure*}
+
 
 \begin{figure}[t]%[ht!]
 \centering
@@ -161,9 +255,9 @@
 
 
 
-\begin{figure*}[ht!]
+\begin{figure}[ht!]
   \centering
-  \begin{minipage}[t]{0.49\linewidth}  
+  \begin{minipage}[t]{\linewidth}  
   \centering
   \resizebox{1.\linewidth}{!} {
   \setlength{\tabcolsep}{6pt}
@@ -189,14 +283,14 @@
 	\end{tabular} } 
   \end{minipage}\begin{minipage}[]{0.49\linewidth}
   \centering
-  \includegraphics[width=1.\linewidth]{paper_images/gen_real_vs_acc.pdf} 
+%   \includegraphics[width=1.\linewidth]{paper_images/gen_real_vs_acc.pdf} 
   \end{minipage}
   \caption{\small {\bf Accuracy vs Realism on Outline$\rightarrow$Image task.} We measure generation accuracy by using a pretrained network to check whether the generated image is of the correct class and realism using the user-judged real vs. fake test from ~\cite{zhang2016colorful,isola2016image2image} conducted on Amazon Mechanical Turk (AMT). Higher is better for both metrics. Our SkinnyResNet architecture outperforms the Encoder-Decoder network, inspired by MUNIT~\cite{huang2018multimodal}. We perform a thorough ablation on our architecture, and find that channel-wise gating achieves high accuracy and higher realism. The right figure shows the correlation between the two tasks.
   \vspace{-4mm}
   }
   \vspace{-3mm}
   \label{fig:acc_vs_real}
-\end{figure*}
+\end{figure}
 
 
 \begin{figure*}[t]
@@ -210,18 +304,18 @@
 \section{Experiments}
 \label{sec:experiments}
 %\subsection{Datasets}
-To explore the efficacy of our full pipeline, we introduce a new outline dataset, consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple. The images have all a white background and were collected using search keywords on popular search engines.
+To explore the efficacy of our full pipeline, we introduce a new outline dataset consisting of 200 images (150 train, 50 test) for each of 10 classes -- basketball, chicken, cookie, cupcake, moon, orange, soccer, strawberry,  watermelon and pineapple. All the images have a white background and were collected using search keywords on popular search engines.
 % \es{where are images coming from?}
 In each image, we obtain rough outlines for the image. We find the largest blob in the image after thresholding it into a black and white image. We fill the interior holes of the largest blob and obtain a smooth outline using the Savitzky–Golay filter~\cite{savitzky1964smoothing}.
 We also conduct a series of experiments using pix2pix-like models to generate the final image directly from the edge map.
-\cameraready{
+
 \subsection{Single Class Generation}
 \paragraph{Datasets} We use the edges2shoes\cite{isola2016image2image}, CelebA-HQ\cite{karras2017progressive} and the Shapenet Cars \cite{chang2015shapenet} datasets to test our method on single class generation. 
 We simplify the edges to attempt to more closely resemble how humans would draw strokes by first using the preprocessing code of \cite{li2019im2pencil} further reducing the strokes with a sketch simplification network \cite{simo2016learning}.
-\paragraph{Architecture} We use the architecture described in \secref{sec:shape} for shape completion and adopt a state of the image to image translation network~\cite{wang2017high} for rendering. In this case, each dataset is a single class only, and so our gating approach is not needed here.}
+\paragraph{Architecture} We use the architecture described in \secref{sec:shape} for shape completion and adopt a state of the image to image translation network~\cite{wang2017high} for rendering. In this case, each dataset is a single class only, and so our gating approach is not needed here.
 
-\cameraready{\paragraph{Results} As we can see the results in Figure \figref{fig:autocomplete_generate_sketches} our 2 step technique allows us to complete the simplified edge maps from the partial strokes and also generate realistic images from the autocompleted simplified edges.
-Table \ref{table:2step_eval_single_class} also shows on two datasets (Faces and Shoes), that using a 2 step procedure is better than going directly from the partial sketch to the completed image.}
+\paragraph{Results} As we can see the results in  \figref{fig:autocomplete_generate_sketches}, our 2 step technique allows us to complete the simplified edge maps from the partial strokes and also generate realistic images from the autocompleted simplified edges.
+Table \ref{table:2step_eval_single_class} also shows on two datasets (Faces and Shoes), that using a 2 step procedure is better than going directly from the partial sketch to the completed image.
 
 \begin{table}[t]
 \resizebox{1.\linewidth}{!} {
@@ -253,7 +347,7 @@ Table \ref{table:2step_eval_single_class} also shows on two datasets (Faces and 
 \end{table}
 
 
-\cameraready{ \subsection{Multi Class Generation} }
+\subsection{Multi Class Generation} 
 \paragraph{Datasets} We used the 10-class dataset previously described in \secref{sec:experiments} to test the multi-class 2 stage approach proposed in the paper.
 \paragraph{Architecture} For the shape completion we use the architecture described in \secref{sec:shape} and for multi-class generations we use the gated architectures as mentioned in \secref{sec:appearance}.
 
@@ -309,12 +403,12 @@ In addition, we compare our proposed gating strategy and {\bf SkinnyResNet} arch
 \item{\bf AdaIn}: Adaptive instance normalization
 \item{\bf ChannelGate(+Bias), ChannelGate}: channel-wise soft-gating, with and without a bias parameter
 \end{itemize}
-AdaIn describes the case where an Instance Normalization~\cite{ulyanovinstance} (IN) operation is applied before scaling and shifting the feature distribution.
-We constrain each element of {\boldmath $\alpha$} and {\boldmath $\beta$} in $[-1, 1]$ %(constraining between [0, 1] did not provide the best empirical results).
+% AdaIn describes the case where an Instance Normalization~\cite{ulyanovinstance} (IN) operation is applied before scaling and shifting the feature distribution.
+% We constrain each element of {\boldmath $\alpha$} and {\boldmath $\beta$} in $[-1, 1]$ %(constraining between [0, 1] did not provide the best empirical results).
 \vspace{-2mm}
-\begin{equation}
-X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath $\beta$}
-\end{equation}
+% \begin{equation}
+% X + \mbox{\boldmath $\alpha$} \odot \text{IN} (\mathcal{H}(X)) + \mbox{\boldmath $\beta$}
+% \end{equation}
 
 % Please see the supplemental material for a more thorough description.
 %\pd{Should we put the gating figure? Or refer to the supplementary?}
