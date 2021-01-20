@@ -1,9 +1,9 @@
 \begin{abstract}
-We propose an interactive GAN-based sketch-to-image translation method 
-that helps novice users easily create images of simple objects.
-The user starts with a sparse sketch and a desired object category, and the network then recommends its plausible completion(s) and shows a corresponding synthesized image. This enables a feedback loop, where the user can edit the sketch based on the network's recommendations, while the network is able to better synthesize the image that the user might have in mind. 
-In order to use a single model for a wide array of object classes, we introduce a gating-based approach for class conditioning, which allows us to generate distinct classes without feature mixing, from a single generator network.
-
+We propose an interactive GAN-based sketch-to-image translation method that helps novice users create images of simple objects.
+As the user starts to draw a sketch of a desired object type, the network interactively recommends plausible completions, and shows a corresponding synthesized image to the user. This enables a feedback loop, where the user can edit their sketch based on the network's recommendations, visualizing both the completed shape and final rendered image while they draw.
+In order to use a single trained model across a wide array of object classes, we introduce a gating-based approach for class conditioning, which allows us to generate distinct classes without feature mixing, from a single generator network. 
+% Video available on https://arnabgho.github.io/iSketchNFill/.
+%\vspace{-4pt}
 %Effectively incorporating low-dimensional conditioning is a crucial, yet relatively unexplored, aspect of multiclass, multimodal, and multitask image-to-image translation.
 %We systematically investigate variants of injecting conditioning into GAN architectures. We propose a soft-gating mechanism, which learns to ``select" which parts of a ResNet~\cite{he2016deep} are used, based on the conditioner.
 %We validate on a challenging outline-to-image task, mapping from a sparse sketch with no internal structure. 

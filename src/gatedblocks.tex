@@ -15,7 +15,7 @@
 \usepackage{animate}
 \usepackage{floatrow}
 \usepackage{etoolbox}
-
+\usepackage{float}
 
 \setlength{\belowcaptionskip}{-1em}
 
@@ -202,13 +202,13 @@ $^{1}$University of Oxford \hspace{15mm} $^{2}$Adobe Research \hspace{15mm} $^{3
     % \vspace{-20mm}
     \includegraphics[width=1.\linewidth]{paper_images/teaser_v7.pdf}
     
-    \captionof{figure}{({\bf Top}) Given sparse user input (first row), our model estimates the complete shape and provides this as a recommendation to the user (shown in gray), along with the final synthesized object (second row). These estimates are updated as the user adds (\textcolor{green}{green}) or removes strokes (\textcolor{red}{red}) over time -- previous edits are shown in black.
+    \captionof{figure}{({\bf Top}) Given a user created incomplete object outline (first row), our model estimates the complete shape and provides this as a recommendation to the user (shown in gray), along with the final synthesized object (second row). These estimates are updated as the user adds (\textcolor{green}{green}) or removes (\textcolor{red}{red}) strokes over time -- previous edits are shown in black.
     ({\bf Bottom}) This generation is class-conditioned, and our method is able to generate distinct multiple objects for the same outline (\eg `circle') by conditioning the generator on the object category.\label{fig:teaser}
     }
     \vspace{1em}
 \end{center}%
 }]
-    
+%\vspace{-4pt}    
 %%%%%%%%% ABSTRACT
 \input{src/0_abstract.tex}
 
@@ -224,7 +224,7 @@ $^{1}$University of Oxford \hspace{15mm} $^{2}$Adobe Research \hspace{15mm} $^{3
 
 \input{src/5_discussion.tex}
 
-\vspace{-4mm}
+% \vspace{-4mm}
 \section*{Acknowledgements}
 \noindent AG, PKD, and PHST are supported by the ERC grant ERC-2012-AdG, EPSRC grant Seebibyte EP/M013774/1, EPSRC/MURI grant EP/N019474/1 and would also like to acknowledge the Royal Academy of Engineering and FiveAI. Part of the work was done while AG was an intern at Adobe.
 
@@ -237,9 +237,9 @@ $^{1}$University of Oxford \hspace{15mm} $^{2}$Adobe Research \hspace{15mm} $^{3
 \bibliography{src/gatedblocks}
 }
 
-% \newpage
+\newpage
 % \appendix
-% \input{src/arxiv_supplemental.tex}
+\input{src/supplemental_arxiv.tex}
 
 % \input{src/supplemental.tex}
 

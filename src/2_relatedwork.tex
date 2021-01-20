@@ -46,12 +46,11 @@
     %\includegraphics[width=.45\linewidth]{images/gif/00001.jpg} \hspace{4pt}
     %\includegraphics[width=.45\linewidth]{images/gif_shadow/00001.jpg} 
     \animategraphics[autoplay,loop,width=.45\linewidth]{25}{images/gif/}{00001}{00266} &
-    \animategraphics[autoplay,loop,width=.50\linewidth]{25}{images/gif_shadow/}{00001}{00419}
+    \animategraphics[autoplay,loop,width=.50\linewidth]{25}{images/gif_shadow/}{00001}{00096}
     \\
     % (a) & (b) \\
     \end{tabular}
-        \caption{{\bf Video of our interface} We can see two versions of our interface. The left side shows how a user can quickly generate multiple objects using a few strokes, while the right side shows the utility of multimodal completions where the user can quickly explore different possible shape generations while drawing.
-        { \textbf{Please view with Acrobat Reader.}}}\label{fig:gui}
+        \caption{{\bf Video of our interface} We can see two versions of our interface. The left side shows how a user can quickly generate multiple objects using a few strokes, while the right side shows the utility of multimodal completions where the user can quickly explore different possible shape generations while drawing. Full video available at our \href{https://arnabgho.github.io/iSketchNFill/}{website}. { \textbf{Please view with Acrobat Reader.}}}\label{fig:gui}
         %\label{fig:gui}}
 \end{figure*}
 
@@ -63,10 +62,11 @@
 More recently, deep recurrent networks have been used to generate sketches~\cite{ha2017neural,ganin2018synthesizing}. Sketch-RNN~\cite{ha2017neural} provides a completion of partial strokes, with the advantage of intermediate stroke information via the Quickdraw dataset at training time. SPIRAL \cite{ganin2018synthesizing} learns to generate digits and faces using a reinforcement learning approach.
 % to generate programs for synthesizing the final image.
 Zhu et al.~\cite{zhu2016generative} train a generative model, and an optimization-based interface to generate possible images, given color or edge constraints. The technique is limited to a single class and does not propose a recommendation for the completion of the shape. SketchyGAN~\cite{chen2018sketchygan} also aimed at generating multi-class images but lacks interactive capability. In contrast to the above, our method provides interactive prediction of the shape and appearance to the user and supports multiple object classes.
-\vspace{-6mm}
+% \vspace{-6mm}
 \paragraph{Generative Modeling} Parametric modeling of an image distribution is a challenging problem. Classic approaches include autoencoders~\cite{hinton2006reducing,vincent2008extracting} and Boltzmann machines~\cite{smolensky1986information}. More modern approaches include autoregressive models~\cite{efros1999texture,van2016conditional}, variational autoencoders (VAEs)~\cite{kingma2013auto}, and generative adversarial networks (GANs). GANs and VAEs both learn mappings from a low-dimensional ``latent" code, sampled stochastically, to a high-dimensional image through a feedforward pass of a network. GANs have been successful recently~\cite{denton2015deep,radford2015unsupervised,arjovsky2017wgan}, and hybrid models feature both a learned mapping from image to latent space as well as adversarial training~\cite{donahue2016adversarial,dumoulin2016adversarially,larsen2016vaegan,chen2016infogan}.
 
-\vspace{2mm} \noindent \textbf{Conditioned Image Generation} The methods described above can be conditioned, either by a low-dimensional vector (such as an object class, or noise vector), a high-dimensional image, or both. Isola et al.~\cite{isola2016image2image} propose ``pix2pix", establishing the general usefulness of conditional GANs for image-to-image translation tasks. However, they discover that obtaining multimodality by injecting a random noise vector is difficult, a result corroborated in~\cite{mathieu2015deep,pathak2016context,zhu2017toward}.
+% \vspace{2mm} 
+\paragraph{Conditioned Image Generation} The methods described above can be conditioned, either by a low-dimensional vector (such as an object class, or noise vector), a high-dimensional image, or both. Isola et al.~\cite{isola2016image2image} propose ``pix2pix", establishing the general usefulness of conditional GANs for image-to-image translation tasks. However, they discover that obtaining multimodality by injecting a random noise vector is difficult, a result corroborated in~\cite{mathieu2015deep,pathak2016context,zhu2017toward}.
 % introduced a set of tasks whereby the pixels of the input in a different domain corresponded to the pixels of the generated image.
 % As a result, image-to-image translation methods have exploded in popularity, as many applications can be expressed in this framework.
 % However, one problem with the original Pix2pix formulation is that the quality degrades quickly with increased class diversity. 
@@ -85,7 +85,8 @@ One modeling approach is to add a predictor from the output to the conditioner, 
 
 %Our architecture also differs from previous art in the form of the architecture whereby all the blocks are residual including the downsampling and upsampling. Previous literature mostly used the residual blocks in the bottleneck layer of an Encoder Decoder structure. The number of channels in the networks doesn't change with the change of resolution as in the original Resnet architecture \cite{he2016deep} in order to ease the learning of the gating mechanism. 
 
-\vspace{2mm} \noindent \textbf{Gating Mechanisms}
+% \vspace{2mm} 
+\noindent \textbf{Gating Mechanisms}
 %Residual Networks \cite{he2016deep} introduced a new set of architectures that enabled training of very deep networks.
 Residual networks~\cite{he2016deep}, first introduced for image classification~\cite{krizhevsky2012imagenet}, have made extremely deep networks viable to train. Veit et al.~\cite{veit2016residual} find that the skip connection in the architecture enables test-time removal of blocks. Follow-up work~\cite{veit2018adaptive} builds in block removal during training time, with the goal of subsets of blocks specializing to different categories. Inspired by these results, we propose the use of gating for image generation and provide a systematic analysis of gating mechanisms.
 % Prior work has demonstrated that in ResNets, some paths are more important for particular classes~\cite{veit2016residual}, and has used this to develop a hard gating mechanism~\cite{veit2018adaptive}.
